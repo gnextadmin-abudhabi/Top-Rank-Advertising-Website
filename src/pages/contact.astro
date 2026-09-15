@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Icon } from 'astro-icon/components';
+import { business } from '../data/business';
+import { serviceTypes } from '../data/serviceTypes';
+import { serviceAreas } from '../data/serviceAreas';
+---
+
+<BaseLayout
+  title={`Contact Us | ${business.name}`}
+  description={`Get in touch with ${business.name} for a B2B printing and branding quotation. Call ${business.phone}, WhatsApp, or fill out our contact form. Serving businesses across Abu Dhabi and Al Ain.`}
+>
+  <Breadcrumbs crumbs={[{ label: 'Contact' }]} />
+
+  <!-- ============ HEADER ============ -->
+  <section class="py-12 lg:py-16">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-3xl animate-fade-up">
+        <h1 class="font-display text-4xl text-brand-900 sm:text-5xl">
+          Contact {business.name}
+        </h1>
+        <p class="mt-4 text-lg leading-relaxed text-stone-600">
+          Have a project in mind or need a quotation? Reach out by phone, WhatsApp, email, or use the form below. We typically respond within one business day.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FORM + CONTACT INFO ============ -->
+  <section class="pb-16 lg:pb-24">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-5 lg:gap-16">
+        <!-- Left: Contact Form (3 cols) -->
+        <div class="lg:col-span-3">
+          <div class="rounded-xl border border-stone-200 bg-white p-6 sm:p-8">
+            <h2 class="font-display text-2xl text-brand-900">Send Us a Message</h2>
+            <p class="mt-2 text-sm text-stone-500">
+              Fill out the form and we will get back to you as soon as possible.
+            </p>
+
+            <form action="#" method="POST" class="mt-8 space-y-6">
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="name" class="block text-sm font-medium text-stone-700">
+                    Full Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Your name"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label for="company" class="block text-sm font-medium text-stone-700">
+                    Company Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    required
+                    placeholder="Your company"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="email" class="block text-sm font-medium text-stone-700">
+                    Email <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="you@company.com"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label for="phone" class="block text-sm font-medium text-stone-700">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="+971 50 000 0000"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div class="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label for="service" class="block text-sm font-medium text-stone-700">
+                    Service Needed
+                  </label>
+                  <select
+                    id="service"
+                    name="service"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  >
+                    <option value="">Select a service</option>
+                    {serviceTypes.map((service) => (
+                      <option value={service.slug}>{service.name}</option>
+                    ))}
+                    <option value="other">Other / Not Sure</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="area" class="block text-sm font-medium text-stone-700">
+                    Your Area
+                  </label>
+                  <select
+                    id="area"
+                    name="area"
+                    class="mt-1.5 w-full rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-900 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                  >
+                    <option value="">Select your area</option>
+                    {serviceAreas.map((area) => (
+                      <option value={area.slug}>{area.name}</option>
+                    ))}
+                    <option value="other">Other Location</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-stone-700">
+                  Project Details <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows="5"
+                  placeholder="Describe your project, quantities, timeline, and any specific requirements..."
+                  class="mt-1.5 w-full rounded-lg border border-stone-300 px-4 py-2.5 text-sm text-stone-900 placeholder-stone-400 transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md sm:w-auto"
+              >
+                <Icon name="lucide:send" class="size-4" />
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Contact Info Card (2 cols) -->
+        <div class="lg:col-span-2">
+          <div class="rounded-xl border border-stone-200 bg-white p-6 sm:p-8">
+            <h2 class="font-display text-2xl text-brand-900">Contact Information</h2>
+
+            <ul class="mt-6 space-y-5">
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+                  <Icon name="lucide:phone" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">Mobile</p>
+                  <a href={business.phoneHref} class="text-sm text-brand-700 transition-colors hover:text-brand-900">
+                    {business.phone}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+                  <Icon name="lucide:phone" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">Landline</p>
+                  <a href={business.landlineHref} class="text-sm text-brand-700 transition-colors hover:text-brand-900">
+                    {business.landline}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent-50">
+                  <Icon name="lucide:message-circle" class="size-5 text-accent-600" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">WhatsApp</p>
+                  <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="text-sm text-accent-600 transition-colors hover:text-accent-800">
+                    {business.whatsapp}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+                  <Icon name="lucide:mail" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">Email</p>
+                  <a href={`mailto:${business.email}`} class="text-sm text-brand-700 transition-colors hover:text-brand-900">
+                    {business.email}
+                  </a>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+                  <Icon name="lucide:map-pin" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">Workshop</p>
+                  <p class="text-sm text-stone-600">
+                    {business.address.street}, {business.address.city}, {business.address.state}
+                  </p>
+                </div>
+              </li>
+
+              <li class="flex items-start gap-3">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-50">
+                  <Icon name="lucide:clock" class="size-5 text-brand-700" />
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-stone-700">Business Hours</p>
+                  <div class="mt-1 space-y-0.5 text-sm text-stone-600">
+                    {business.hours.map((schedule) => (
+                      <p>
+                        <span class="font-medium">{schedule.days}:</span> {schedule.hours}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <div class="mt-8 rounded-lg border border-brand-200 bg-brand-50 p-4">
+              <div class="flex items-start gap-3">
+                <Icon name="lucide:message-circle" class="mt-0.5 size-5 shrink-0 text-accent-600" />
+                <div>
+                  <p class="text-sm font-semibold text-brand-800">Prefer WhatsApp?</p>
+                  <p class="mt-1 text-sm text-brand-700">
+                    Click to chat with us on WhatsApp at
+                    <a href={business.whatsappHref} target="_blank" rel="noopener noreferrer" class="font-semibold underline">
+                      {business.whatsapp}
+                    </a>.
+                    We typically reply within minutes during business hours.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
