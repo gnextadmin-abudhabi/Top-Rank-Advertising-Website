@@ -5,11 +5,26 @@ import { Icon } from 'astro-icon/components';
 import { business } from '../../data/business';
 import { serviceTypes } from '../../data/serviceTypes';
 import { serviceUrl, contactUrl } from '../../lib/urls';
+
+const servicesSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'B2B Printing & Branding Services',
+  description: `${business.name} offers professional printing and branding services for businesses across Abu Dhabi and Al Ain.`,
+  itemListElement: serviceTypes.map((service, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: service.name,
+    description: service.shortDescription,
+    url: `${business.website}${serviceUrl(service.slug)}`,
+  })),
+};
 ---
 
 <BaseLayout
   title={`B2B Printing & Branding Services | ${business.name}`}
   description={`${business.name} offers a full range of B2B printing and branding services across Abu Dhabi and Al Ain. From banners and stickers to corporate branding and acrylic fabrication.`}
+  schema={servicesSchema}
 >
   <Breadcrumbs crumbs={[{ label: 'Services' }]} />
 

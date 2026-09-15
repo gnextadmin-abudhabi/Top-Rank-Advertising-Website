@@ -5,11 +5,63 @@ import { Icon } from 'astro-icon/components';
 import { business } from '../data/business';
 import { serviceTypes } from '../data/serviceTypes';
 import { serviceAreas } from '../data/serviceAreas';
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ContactPage',
+      '@id': `${business.website}/contact/#webpage`,
+      url: `${business.website}/contact/`,
+      name: `Contact ${business.name}`,
+      description: `Get in touch with ${business.name} for B2B printing and branding services in Abu Dhabi and Al Ain.`,
+      isPartOf: { '@id': `${business.website}/#website` },
+      about: { '@id': `${business.website}/#business` },
+    },
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${business.website}/#business`,
+      name: business.name,
+      legalName: business.legalName,
+      url: business.website,
+      telephone: business.phone,
+      email: business.email,
+      description: business.description,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: business.address.street,
+        addressLocality: business.address.city,
+        addressRegion: business.address.state,
+        addressCountry: 'AE',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: business.coordinates.lat,
+        longitude: business.coordinates.lng,
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+          opens: '09:00',
+          closes: '19:00',
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: 'Friday',
+          opens: '14:30',
+          closes: '19:00',
+        },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={`Contact Us | ${business.name}`}
   description={`Get in touch with ${business.name} for a B2B printing and branding quotation. Call ${business.phone}, WhatsApp, or fill out our contact form. Serving businesses across Abu Dhabi and Al Ain.`}
+  schema={contactSchema}
 >
   <Breadcrumbs crumbs={[{ label: 'Contact' }]} />
 

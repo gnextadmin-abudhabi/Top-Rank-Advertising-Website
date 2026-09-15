@@ -166,4 +166,16 @@ After generating images, save them with these names in `public/images/`:
 | `design-prepress-services.webp` | Service page image |
 | `og-default.webp` | Social share / Open Graph image |
 
-Once you have the images, let me know and I will update the image references from `.svg` to `.webp` and rebuild the site.
+Once you have the images, let me know and I will update the image references from `.svg` to `.webp` and rebuild the site. Now we need to add images because there is no image on the website. I'm going to give you images to upload in the folder at the below path. You can go ahead and check whichever are suitable and applicable to add, and then you can add those images in the respective places.
+Make sure that you:
+- compress all those images
+- convert them to WebP
+- add the alt text and description for the specific key images based on the keywords
+- upload all those into the website
+Right? /Users/apple/Library/Mobile\ Documents/com\~apple\~CloudDocs/Work/Projects/Top\ Rank\ Advertising/Website/Images.   Also you need to:
+- Check for all page views, including desktop, large screen, mobile, and tablet.
+- Optimize everything.
+- Add the location embedment to the footer. In the footer you can add the map embedment as it is, as per the Google Map.
+- Check for schema markup and any SEO elements from an SEO perspective.
+- Remove the logo with a white background. Rather include the logo in a transparent PNG so the look and feel will be better.
+- At the bottom add "Powered by gxlocate.com"

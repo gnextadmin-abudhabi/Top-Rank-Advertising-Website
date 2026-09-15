@@ -5,11 +5,63 @@ import { Icon } from 'astro-icon/components';
 import { business } from '../data/business';
 import { serviceAreas } from '../data/serviceAreas';
 import { areaUrl, contactUrl } from '../lib/urls';
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'AboutPage',
+      '@id': `${business.website}/about/#webpage`,
+      url: `${business.website}/about/`,
+      name: `About ${business.name}`,
+      description: `Learn about ${business.name}, a B2B printing and branding company based in Mussafah, Abu Dhabi.`,
+      isPartOf: { '@id': `${business.website}/#website` },
+      about: { '@id': `${business.website}/#business` },
+    },
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${business.website}/#business`,
+      name: business.name,
+      legalName: business.legalName,
+      url: business.website,
+      telephone: business.phone,
+      email: business.email,
+      description: business.description,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: business.address.street,
+        addressLocality: business.address.city,
+        addressRegion: business.address.state,
+        addressCountry: 'AE',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: business.coordinates.lat,
+        longitude: business.coordinates.lng,
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+          opens: '09:00',
+          closes: '19:00',
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: 'Friday',
+          opens: '14:30',
+          closes: '19:00',
+        },
+      ],
+    },
+  ],
+};
 ---
 
 <BaseLayout
   title={`About ${business.name} | B2B Printing & Branding Abu Dhabi`}
   description={`Learn about ${business.name}, a B2B printing and branding company based in Mussafah, Abu Dhabi. Serving corporate, retail, construction, and event clients across Abu Dhabi and Al Ain.`}
+  schema={aboutSchema}
 >
   <Breadcrumbs crumbs={[{ label: 'About' }]} />
 
@@ -47,7 +99,15 @@ import { areaUrl, contactUrl } from '../lib/urls';
           </p>
         </div>
 
-        <div>
+        <div class="space-y-6">
+          <img
+            src="/images/about-office.webp"
+            alt="Modern Abu Dhabi office interior featuring large-format printed wall graphics and branded environmental design by Top Rank Advertising"
+            class="w-full rounded-xl shadow-lg"
+            width="1376"
+            height="768"
+            loading="lazy"
+          />
           <div class="rounded-xl border border-stone-200 bg-white p-8">
             <div class="flex items-center gap-4">
               <div class="flex size-16 items-center justify-center rounded-full bg-brand-100">
@@ -127,6 +187,17 @@ import { areaUrl, contactUrl } from '../lib/urls';
             <p class="mt-2 text-sm leading-relaxed text-stone-600">{item.detail}</p>
           </div>
         ))}
+      </div>
+
+      <div class="mt-12">
+        <img
+          src="/images/about-partnership.webp"
+          alt="Top Rank Advertising account manager shaking hands with B2B client during corporate branding consultation in Abu Dhabi"
+          class="w-full rounded-xl shadow-lg"
+          width="1376"
+          height="768"
+          loading="lazy"
+        />
       </div>
     </div>
   </section>

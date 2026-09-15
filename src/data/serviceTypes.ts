@@ -31,7 +31,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 500, max: 15000 },
     emergency: false,
     icon: 'lucide:image',
-    image: '/images/eco-solvent-banner-printing.svg',
+    image: '/images/eco-solvent-banner-printing.webp',
     processSteps: [
       {
         title: 'Project Brief & Sizing',
@@ -65,7 +65,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 300, max: 8000 },
     emergency: false,
     icon: 'lucide:tags',
-    image: '/images/sticker-printing.svg',
+    image: '/images/sticker-printing.webp',
     processSteps: [
       {
         title: 'Material & Application Review',
@@ -99,7 +99,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 2000, max: 50000 },
     emergency: false,
     icon: 'lucide:palette',
-    image: '/images/branding.svg',
+    image: '/images/branding.webp',
     processSteps: [
       {
         title: 'Brand Discovery Session',
@@ -133,7 +133,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 800, max: 25000 },
     emergency: false,
     icon: 'lucide:box',
-    image: '/images/customized-acrylic-fabrication.svg',
+    image: '/images/customized-acrylic-fabrication.webp',
     processSteps: [
       {
         title: 'Design Consultation & Measurements',
@@ -167,7 +167,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 400, max: 12000 },
     emergency: false,
     icon: 'lucide:printer',
-    image: '/images/large-format-digital-printing.svg',
+    image: '/images/large-format-digital-printing.webp',
     processSteps: [
       {
         title: 'Scope & Substrate Selection',
@@ -201,7 +201,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 1500, max: 35000 },
     emergency: false,
     icon: 'lucide:truck',
-    image: '/images/vehicle-branding.svg',
+    image: '/images/vehicle-branding.webp',
     processSteps: [
       {
         title: 'Vehicle Survey & Template',
@@ -235,7 +235,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 2000, max: 40000 },
     emergency: false,
     icon: 'lucide:lightbulb',
-    image: '/images/led-illuminated-signage.svg',
+    image: '/images/led-illuminated-signage.webp',
     processSteps: [
       {
         title: 'Site Survey & Permitting Advice',
@@ -269,7 +269,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 1000, max: 30000 },
     emergency: false,
     icon: 'lucide:flag',
-    image: '/images/exhibition-event-branding.svg',
+    image: '/images/exhibition-event-branding.webp',
     processSteps: [
       {
         title: 'Event Requirements & Timeline',
@@ -303,7 +303,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 500, max: 15000 },
     emergency: false,
     icon: 'lucide:store',
-    image: '/images/promotional-pos-displays.svg',
+    image: '/images/promotional-pos-displays.webp',
     processSteps: [
       {
         title: 'Retail Environment Assessment',
@@ -337,7 +337,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 300, max: 10000 },
     emergency: false,
     icon: 'lucide:pen-tool',
-    image: '/images/design-prepress-services.svg',
+    image: '/images/design-prepress-services.webp',
     processSteps: [
       {
         title: 'File Intake & Technical Review',

@@ -18,11 +18,26 @@ function priorityClasses(priority: string): string {
       return 'bg-stone-100 text-stone-500';
   }
 }
+
+const areasSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Service Areas',
+  description: `${business.name} serves businesses across Abu Dhabi and Al Ain.`,
+  itemListElement: serviceAreas.map((area, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: area.name,
+    description: area.description,
+    url: `${business.website}${areaUrl(area.slug)}`,
+  })),
+};
 ---
 
 <BaseLayout
   title={`Service Areas | ${business.name}`}
   description={`${business.name} serves businesses across Abu Dhabi and Al Ain. See our service areas, response times, and coverage for your location.`}
+  schema={areasSchema}
 >
   <Breadcrumbs crumbs={[{ label: 'Service Areas' }]} />
 
