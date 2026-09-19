@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Every photo on the site renders through here.
+ *
+ * All 13 source assets are 1376x768 (16:9), but several slots want a squarer
+ * crop. So aspect ratio is ALWAYS owned by the frame and the image fills it
+ * with object-cover — the intrinsic size is never restated by hand, which is
+ * what previously produced width="1024" height="1024" on a 1376x768 file and
+ * the resulting layout shift.
+ */
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  ratio?: '16/9' | '4/3' | '1/1' | '3/4' | '21/9' | '3/2';
+  sizes?: string;
+  /** Above-the-fold: eager + high priority. Everything else lazy-loads. */
+  priority?: boolean;
+  /** Enables the hover zoom when an ancestor carries `group`. */
+  zoom?: boolean;
+  position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
+  rounded?: 'none' | 'lg' | 'xl' | '2xl' | '3xl';
+  class?: string;
+  imgClass?: string;
+}
+
+const RATIOS = {
+  '16/9': 'aspect-[16/9]',
+  '4/3': 'aspect-[4/3]',
+  '1/1': 'aspect-square',
+  '3/4': 'aspect-[3/4]',
+  '21/9': 'aspect-[21/9]',
+  '3/2': 'aspect-[3/2]',
+} as const;
+
+const POSITIONS = {
+  center: 'object-center',
+  top: 'object-top',
+  bottom: 'object-bottom',
+  left: 'object-left',
+  right: 'object-right',
+} as const;
+
+const ROUNDED = {
+  none: '',
+  lg: 'rounded-lg',
+  xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
+  '3xl': 'rounded-3xl',
+} as const;
+
+const {
+  src,
+  alt,
+  ratio = '16/9',
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  priority = false,
+  zoom = false,
+  position = 'center',
+  rounded = '2xl',
+  class: className,
+  imgClass,
+} = Astro.props;
+
+// Never upscale past the 1376px master.
+const widths = [420, 640, 900, 1376];
+---
+
+<div
+  class={[
+    'relative overflow-hidden bg-brand-900/5',
+    RATIOS[ratio],
+    ROUNDED[rounded],
+    zoom ? 'card-media' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')}
+>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes}
+    quality={82}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    class={[
+      'absolute inset-0 h-full w-full object-cover',
+      POSITIONS[position],
+      imgClass,
+    ]
+      .filter(Boolean)
+      .join(' ')}
+    {...priority ? { fetchpriority: 'high' } : {}}
+  />
+</div>

@@ -2,16 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-  .stagger-6 { animation-delay: 0.6s; }
-}
-
 @layer components {
+  /* DM Serif Display shipped weight 400 only; Outfit has 100-900, so display
+     type now carries real weight instead of relying on size alone. */
+  .font-display {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
   .card-hover {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
@@ -27,13 +25,37 @@
     color: #44403c;
   }
 
+  /* Tailwind preflight sets `p { margin: 0 }`; these rules restore the rhythm.
+     Without them, stacked paragraphs fuse into a single wall of text on
+     about.astro, all 3 blog posts and all 100 area+service pages. */
+  .prose-editorial p {
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-editorial p:last-child {
+    margin-bottom: 0;
+  }
+
+  .prose-editorial ul,
+  .prose-editorial ol {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-editorial strong {
+    font-weight: 600;
+    color: #1c1917;
+  }
+
   .prose-editorial h1,
   .prose-editorial h2,
   .prose-editorial h3,
   .prose-editorial h4 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: #1c1917;
-    line-height: 1.3;
+    line-height: 1.25;
   }
 
   .prose-editorial h2 {
@@ -59,6 +81,7 @@
   }
 
   .prose-editorial blockquote {
+    margin: 1.75rem 0;
     border-left: 3px solid #67cbbd;
     padding-left: 1.25rem;
     font-style: italic;
@@ -77,5 +100,192 @@
 
   .prose-editorial li {
     margin-bottom: 0.5rem;
+  }
+}
+
+/* ==========================================================================
+   Revamp: motion + theme layer
+   Reveal animation is driven by data attributes, never by Tailwind classes.
+   Generated classes such as `stagger-${i}` are invisible to Tailwind's content
+   scanner and get purged; attribute selectors and inline custom properties
+   cannot be. See tailwind.config.js content glob.
+   ========================================================================== */
+
+:root {
+  --rv-dur: 700ms;
+  --rv-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --rv-dist: 28px;
+  --rv-delay: 0ms;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reveal states are gated on `html.js`, added by an inline script in
+   BaseLayout. No JS -> the selector never matches -> content renders visible
+   and static. The start state can therefore never trap content. */
+html.js [data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform;
+  transition:
+    opacity var(--rv-dur) var(--rv-ease) var(--rv-delay),
+    transform var(--rv-dur) var(--rv-ease) var(--rv-delay),
+    clip-path var(--rv-dur) var(--rv-ease) var(--rv-delay);
+}
+
+html.js [data-reveal='up'] { transform: translate3d(0, var(--rv-dist), 0); }
+html.js [data-reveal='left'] { transform: translate3d(calc(var(--rv-dist) * -1), 0, 0); }
+html.js [data-reveal='right'] { transform: translate3d(var(--rv-dist), 0, 0); }
+html.js [data-reveal='scale'] { transform: scale(0.94); }
+/* `clip` animates the CHILD, never the observed element itself.
+   An element with clip-path:inset(0 0 100% 0) has zero visible area, so
+   IntersectionObserver never reports it as intersecting, `.is-in` is never
+   added, and it stays hidden forever. Keeping the observed node unclipped
+   breaks that deadlock. */
+html.js [data-reveal='clip'] { opacity: 1; }
+
+html.js [data-reveal='clip'] > * {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--rv-dur) var(--rv-ease) var(--rv-delay);
+}
+
+html.js [data-reveal='clip'].is-in > * {
+  clip-path: inset(0 0 0 0);
+}
+
+html.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* Focus visibility — the site had none on nav links or buttons. */
+:focus-visible {
+  outline: 2px solid #E4108B;
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+.on-dark :focus-visible,
+[data-tone='ink'] :focus-visible,
+[data-tone='deep'] :focus-visible {
+  outline-color: #67cbbd;
+}
+
+/* Marquee — the track is duplicated in markup, so -50% loops seamlessly. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+
+/* Nav underline sweep: grows from the left, retreats to the right. */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  background-color: #E4108B;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.35s var(--rv-ease);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[aria-current='page']::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Arrow-circle CTA treatment. */
+.btn-arrow__circle {
+  transition: transform 0.35s var(--rv-ease), background-color 0.35s var(--rv-ease);
+}
+
+.group:hover .btn-arrow__circle {
+  transform: translateX(4px);
+}
+
+/* Image zoom inside a fixed-aspect frame. */
+.card-media img {
+  transition: transform 0.6s var(--rv-ease);
+}
+
+.group:hover .card-media img {
+  transform: scale(1.06);
+}
+
+/* Accent hairline that wipes in on reveal. */
+.hairline {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.8s var(--rv-ease) var(--rv-delay);
+}
+
+[data-reveal].is-in .hairline,
+.is-in > .hairline {
+  transform: scaleX(1);
+}
+
+/* Native <details> animation without display:none — the FAQ must stay
+   crawlable and must match its FAQPage schema. */
+.faq-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.faq-panel > div {
+  overflow: hidden;
+}
+
+/* ---- Reduced motion: content first, always. ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.js [data-reveal],
+  html.js [data-reveal='clip'] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .marquee__track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .hairline {
+    transform: scaleX(1) !important;
   }
 }

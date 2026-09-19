@@ -1,0 +1,97 @@
+---
+import { Icon } from 'astro-icon/components';
+
+/**
+ * Replaces ~40 hand-written CTA anchors. `arrow` renders the arrow-circle
+ * treatment: a circular chip that slides on hover.
+ */
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  variant?: 'accent' | 'solid' | 'glass' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  icon?: string;
+  arrow?: boolean;
+  external?: boolean;
+  class?: string;
+  id?: string;
+  ariaLabel?: string;
+}
+
+const VARIANTS = {
+  accent: 'bg-accent-500 text-white hover:bg-accent-600 shadow-brand-sm',
+  solid: 'bg-brand-800 text-white hover:bg-brand-900 shadow-brand-sm',
+  glass: 'bg-white/10 text-white ring-1 ring-white/25 hover:bg-white/20 backdrop-blur-sm',
+  outline: 'bg-transparent text-brand-800 ring-1 ring-brand-300 hover:bg-brand-50',
+  ghost: 'bg-white text-brand-800 hover:bg-brand-50 shadow-brand-sm',
+} as const;
+
+const SIZES = {
+  sm: 'gap-2 px-4 py-2 text-sm',
+  md: 'gap-2.5 px-5 py-2.5 text-sm sm:text-base',
+  lg: 'gap-3 px-6 py-3 text-base',
+} as const;
+
+const CIRCLES = {
+  accent: 'bg-white/20 text-white',
+  solid: 'bg-white/20 text-white',
+  glass: 'bg-white/20 text-white',
+  outline: 'bg-brand-100 text-brand-800',
+  ghost: 'bg-brand-100 text-brand-800',
+} as const;
+
+const {
+  href,
+  type = 'button',
+  variant = 'accent',
+  size = 'md',
+  icon,
+  arrow = false,
+  external = false,
+  class: className,
+  id,
+  ariaLabel,
+} = Astro.props;
+
+const classes = [
+  'group inline-flex items-center justify-center rounded-full font-semibold transition-colors duration-300',
+  VARIANTS[variant],
+  SIZES[size],
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+
+const rel = external ? 'noopener noreferrer' : undefined;
+const target = external ? '_blank' : undefined;
+---
+
+{
+  href ? (
+    <a href={href} class={classes} id={id} rel={rel} target={target} aria-label={ariaLabel}>
+      {icon && <Icon name={icon} class="size-5 shrink-0" aria-hidden="true" />}
+      <slot />
+      {arrow && (
+        <span
+          class={`btn-arrow__circle flex size-6 shrink-0 items-center justify-center rounded-full ${CIRCLES[variant]}`}
+          aria-hidden="true"
+        >
+          <Icon name="lucide:arrow-right" class="size-3.5" />
+        </span>
+      )}
+    </a>
+  ) : (
+    <button type={type} class={classes} id={id} aria-label={ariaLabel}>
+      {icon && <Icon name={icon} class="size-5 shrink-0" aria-hidden="true" />}
+      <slot />
+      {arrow && (
+        <span
+          class={`btn-arrow__circle flex size-6 shrink-0 items-center justify-center rounded-full ${CIRCLES[variant]}`}
+          aria-hidden="true"
+        >
+          <Icon name="lucide:arrow-right" class="size-3.5" />
+        </span>
+      )}
+    </button>
+  )
+}

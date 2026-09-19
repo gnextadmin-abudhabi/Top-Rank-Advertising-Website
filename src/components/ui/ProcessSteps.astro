@@ -1,0 +1,64 @@
+---
+import type { ProcessStep } from '../../data/serviceTypes';
+import Reveal from './Reveal.astro';
+
+/**
+ * Oversized ghost numerals are editorial texture drawn from data that already
+ * exists (the step ordinal) — they make no statistical claim.
+ */
+interface Props {
+  steps: ProcessStep[];
+  layout?: 'grid' | 'split';
+  tone?: 'light' | 'dark';
+}
+
+const { steps, layout = 'grid', tone = 'light' } = Astro.props;
+const isDark = tone === 'dark';
+
+const GRIDS = {
+  grid: 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4',
+  split: 'grid gap-6 sm:grid-cols-2',
+} as const;
+---
+
+<div class={GRIDS[layout]}>
+  {
+    steps.map((step, i) => (
+      <Reveal variant="up" delay={Math.min(i, 5) * 80}>
+        <div
+          class={[
+            'group relative h-full overflow-hidden rounded-2xl p-6 transition-all duration-400 ease-out-expo hover:-translate-y-1',
+            isDark
+              ? 'bg-white/5 ring-1 ring-white/10 hover:bg-white/10'
+              : 'border border-stone-200 bg-white hover:shadow-brand-md',
+          ].join(' ')}
+        >
+          <span
+            class={`pointer-events-none absolute right-4 top-3 select-none font-display text-6xl leading-none ${isDark ? 'text-white/5' : 'text-brand-100'}`}
+            aria-hidden="true"
+          >
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div class="relative">
+            <span
+              class={`inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] ${isDark ? 'text-accent-400' : 'text-accent-600'}`}
+            >
+              <span class="size-1.5 rounded-full bg-accent-500" aria-hidden="true" />
+              Step {i + 1}
+            </span>
+            <h3
+              class={`mt-3 font-display text-lg tracking-tight md:text-xl ${isDark ? 'text-white' : 'text-brand-900'}`}
+            >
+              {step.title}
+            </h3>
+            <p
+              class={`mt-2 text-sm leading-relaxed ${isDark ? 'text-brand-200' : 'text-stone-600'}`}
+            >
+              {step.description}
+            </p>
+          </div>
+        </div>
+      </Reveal>
+    ))
+  }
+</div>

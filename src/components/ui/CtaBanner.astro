@@ -1,0 +1,81 @@
+---
+import Button from './Button.astro';
+import Reveal from './Reveal.astro';
+
+/**
+ * The same CTA block was hand-written on 8 page templates with only the
+ * headline changing. One component, two tones: a full-width band or an
+ * inset rounded panel.
+ */
+interface Props {
+  title: string;
+  body?: string;
+  primary: { label: string; href: string; icon?: string; external?: boolean };
+  secondary?: { label: string; href: string; icon?: string; external?: boolean };
+  tone?: 'band' | 'panel';
+  class?: string;
+}
+
+const { title, body, primary, secondary, tone = 'band', class: className } = Astro.props;
+const isPanel = tone === 'panel';
+---
+
+<div
+  class={[
+    'on-dark relative overflow-hidden text-center',
+    isPanel
+      ? 'rounded-3xl bg-gradient-to-br from-brand-900 to-brand-800 px-6 py-12 sm:px-10 md:py-16'
+      : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')}
+>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(100,194,182,0.18),_transparent_70%)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative mx-auto max-w-3xl">
+    <Reveal variant="up">
+      <h2 class="font-display text-3xl leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl">
+        {title}
+      </h2>
+    </Reveal>
+    {
+      body && (
+        <Reveal variant="up" delay={90}>
+          <p class="mt-4 text-base leading-relaxed text-brand-200 sm:text-lg">{body}</p>
+        </Reveal>
+      )
+    }
+    <Reveal variant="up" delay={180}>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <Button
+          href={primary.href}
+          variant="accent"
+          size="lg"
+          icon={primary.icon}
+          external={primary.external}
+          arrow
+        >
+          {primary.label}
+        </Button>
+        {
+          secondary && (
+            <Button
+              href={secondary.href}
+              variant="glass"
+              size="lg"
+              icon={secondary.icon}
+              external={secondary.external}
+            >
+              {secondary.label}
+            </Button>
+          )
+        }
+      </div>
+    </Reveal>
+  </div>
+</div>

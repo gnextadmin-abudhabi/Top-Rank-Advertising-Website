@@ -1,0 +1,67 @@
+---
+import Reveal from './Reveal.astro';
+
+/**
+ * Counts up on first intersection via the shared observer in BaseLayout.
+ * Only ever fed values that already exist in src/data — no invented figures.
+ * Renders the final value as its initial text so no-JS and reduced-motion
+ * users see the real number.
+ */
+interface Props {
+  value: number;
+  label: string;
+  prefix?: string;
+  suffix?: string;
+  format?: 'int' | 'comma';
+  delay?: number;
+  tone?: 'light' | 'dark';
+}
+
+const {
+  value,
+  label,
+  prefix,
+  suffix,
+  format = 'int',
+  delay = 0,
+  tone = 'dark',
+} = Astro.props;
+
+const initial = format === 'comma' ? value.toLocaleString('en-US') : String(value);
+const isDark = tone === 'dark';
+---
+
+<Reveal variant="up" delay={delay} class="text-center">
+  <div class="flex items-baseline justify-center gap-0.5">
+    {
+      prefix && (
+        <span
+          class={`font-display text-2xl md:text-3xl ${isDark ? 'text-brand-400' : 'text-brand-600'}`}
+        >
+          {prefix}
+        </span>
+      )
+    }
+    <span
+      data-countup={value}
+      data-countup-format={format}
+      class={`font-display text-4xl tabular-nums tracking-tight sm:text-5xl md:text-6xl ${isDark ? 'text-white' : 'text-brand-900'}`}
+    >
+      {initial}
+    </span>
+    {
+      suffix && (
+        <span
+          class={`font-display text-xl md:text-2xl ${isDark ? 'text-brand-400' : 'text-brand-600'}`}
+        >
+          {suffix}
+        </span>
+      )
+    }
+  </div>
+  <p
+    class={`mt-2 text-xs font-semibold uppercase tracking-[0.18em] ${isDark ? 'text-brand-300' : 'text-stone-500'}`}
+  >
+    {label}
+  </p>
+</Reveal>

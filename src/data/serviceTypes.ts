@@ -1,3 +1,15 @@
+import type { ImageMetadata } from 'astro';
+
+import imgEcoSolventBannerPrinting from '../assets/images/eco-solvent-banner-printing.webp';
+import imgStickerPrinting from '../assets/images/sticker-printing.webp';
+import imgBranding from '../assets/images/branding.webp';
+import imgCustomizedAcrylicFabrication from '../assets/images/customized-acrylic-fabrication.webp';
+import imgLargeFormatDigitalPrinting from '../assets/images/large-format-digital-printing.webp';
+import imgVehicleBranding from '../assets/images/vehicle-branding.webp';
+import imgLedIlluminatedSignage from '../assets/images/led-illuminated-signage.webp';
+import imgExhibitionEventBranding from '../assets/images/exhibition-event-branding.webp';
+import imgPromotionalPosDisplays from '../assets/images/promotional-pos-displays.webp';
+import imgDesignPrepressServices from '../assets/images/design-prepress-services.webp';
 export interface ProcessStep {
   title: string;
   description: string;
@@ -16,7 +28,8 @@ export interface ServiceType {
   priceRange: PriceRange;
   emergency: boolean;
   icon: string;
-  image: string;
+  /** Processed at build time by astro:assets; carries real intrinsic size. */
+  image: ImageMetadata;
   processSteps: ProcessStep[];
 }
 
@@ -31,7 +44,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 500, max: 15000 },
     emergency: false,
     icon: 'lucide:image',
-    image: '/images/eco-solvent-banner-printing.webp',
+    image: imgEcoSolventBannerPrinting,
     processSteps: [
       {
         title: 'Project Brief & Sizing',
@@ -65,7 +78,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 300, max: 8000 },
     emergency: false,
     icon: 'lucide:tags',
-    image: '/images/sticker-printing.webp',
+    image: imgStickerPrinting,
     processSteps: [
       {
         title: 'Material & Application Review',
@@ -99,7 +112,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 2000, max: 50000 },
     emergency: false,
     icon: 'lucide:palette',
-    image: '/images/branding.webp',
+    image: imgBranding,
     processSteps: [
       {
         title: 'Brand Discovery Session',
@@ -133,7 +146,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 800, max: 25000 },
     emergency: false,
     icon: 'lucide:box',
-    image: '/images/customized-acrylic-fabrication.webp',
+    image: imgCustomizedAcrylicFabrication,
     processSteps: [
       {
         title: 'Design Consultation & Measurements',
@@ -167,7 +180,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 400, max: 12000 },
     emergency: false,
     icon: 'lucide:printer',
-    image: '/images/large-format-digital-printing.webp',
+    image: imgLargeFormatDigitalPrinting,
     processSteps: [
       {
         title: 'Scope & Substrate Selection',
@@ -201,7 +214,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 1500, max: 35000 },
     emergency: false,
     icon: 'lucide:truck',
-    image: '/images/vehicle-branding.webp',
+    image: imgVehicleBranding,
     processSteps: [
       {
         title: 'Vehicle Survey & Template',
@@ -235,7 +248,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 2000, max: 40000 },
     emergency: false,
     icon: 'lucide:lightbulb',
-    image: '/images/led-illuminated-signage.webp',
+    image: imgLedIlluminatedSignage,
     processSteps: [
       {
         title: 'Site Survey & Permitting Advice',
@@ -269,7 +282,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 1000, max: 30000 },
     emergency: false,
     icon: 'lucide:flag',
-    image: '/images/exhibition-event-branding.webp',
+    image: imgExhibitionEventBranding,
     processSteps: [
       {
         title: 'Event Requirements & Timeline',
@@ -303,7 +316,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 500, max: 15000 },
     emergency: false,
     icon: 'lucide:store',
-    image: '/images/promotional-pos-displays.webp',
+    image: imgPromotionalPosDisplays,
     processSteps: [
       {
         title: 'Retail Environment Assessment',
@@ -337,7 +350,7 @@ export const serviceTypes: ServiceType[] = [
     priceRange: { min: 300, max: 10000 },
     emergency: false,
     icon: 'lucide:pen-tool',
-    image: '/images/design-prepress-services.webp',
+    image: imgDesignPrepressServices,
     processSteps: [
       {
         title: 'File Intake & Technical Review',

@@ -6,10 +6,15 @@ import { blogUrl } from '../../lib/urls';
 import { business } from '../../data/business';
 import { Icon } from 'astro-icon/components';
 
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Reveal from '../../components/ui/Reveal.astro';
+
 const posts = (await getCollection('blog')).sort(
   (a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
 );
 
+// Whole literal class strings — Tailwind cannot see concatenated fragments.
 const categoryColors: Record<string, { bg: string; text: string }> = {
   emergency: { bg: 'bg-red-100', text: 'text-red-700' },
   tips: { bg: 'bg-brand-100', text: 'text-brand-700' },
@@ -34,64 +39,78 @@ function formatDate(iso: string): string {
 >
   <Breadcrumbs crumbs={[{ label: 'Blog' }]} />
 
-  <section class="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-16">
-    <div class="text-center">
-      <h1 class="font-display text-3xl text-brand-900 sm:text-4xl lg:text-5xl">
-        B2B Printing & Branding Insights
-      </h1>
-      <p class="mx-auto mt-4 max-w-2xl text-stone-600">
-        Practical advice, project guides, and industry insights from the team at
-        {business.name}. Stay informed and make better decisions for your business.
-      </p>
-    </div>
+  <Section tone="paper" size="sm">
+    <SectionHeading
+      eyebrow="Insights"
+      title="B2B Printing & Branding Insights"
+      as="h1"
+      size="page"
+      align="center"
+      max="max-w-2xl"
+      subcopy={`Practical advice, project guides, and industry insights from the team at ${business.name}. Stay informed and make better decisions for your business.`}
+    />
+  </Section>
 
-    {posts.length === 0 ? (
-      <p class="mt-12 text-center text-stone-500">
-        No blog posts yet. Check back soon for printing tips and branding insights.
-      </p>
-    ) : (
-      <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => {
-          const colors = categoryColors[post.data.category] || categoryColors.news;
-          return (
-            <a
-              href={blogUrl(post.id)}
-              class="card-hover group flex flex-col rounded-xl border border-stone-200 bg-white"
-            >
-              <div class="flex flex-1 flex-col p-6">
-                <div class="flex items-center gap-3">
-                  <span class={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${colors.bg} ${colors.text}`}>
-                    {post.data.category}
-                  </span>
-                  {post.data.readingTime && (
-                    <span class="flex items-center gap-1 text-xs text-stone-400">
-                      <Icon name="lucide:clock" class="size-3" />
-                      {post.data.readingTime}
-                    </span>
-                  )}
-                </div>
+  <Section tone="plain" size="lg">
+    {
+      posts.length === 0 ? (
+        <p class="text-center text-stone-500">
+          No blog posts yet. Check back soon for printing tips and branding insights.
+        </p>
+      ) : (
+        <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+          {posts.map((post, i) => {
+            const colors = categoryColors[post.data.category] || categoryColors.news;
+            return (
+              <Reveal variant="up" delay={Math.min(i, 5) * 80} class="h-full">
+                <a
+                  href={blogUrl(post.id)}
+                  class="group flex h-full flex-col rounded-2xl border border-stone-200 bg-white transition-all duration-400 ease-out-expo hover:-translate-y-1.5 hover:border-brand-200 hover:shadow-brand-md"
+                >
+                  <div class="flex flex-1 flex-col p-6">
+                    <div class="flex items-center gap-3">
+                      <span
+                        class={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] ${colors.bg} ${colors.text}`}
+                      >
+                        {post.data.category}
+                      </span>
+                      {post.data.readingTime && (
+                        <span class="flex items-center gap-1 text-xs text-stone-500">
+                          <Icon name="lucide:clock" class="size-3" />
+                          {post.data.readingTime}
+                        </span>
+                      )}
+                    </div>
 
-                <h2 class="mt-3 font-display text-lg text-brand-900 group-hover:text-brand-700">
-                  {post.data.title}
-                </h2>
+                    <h2 class="mt-4 font-display text-lg tracking-tight text-brand-900 md:text-xl">
+                      {post.data.title}
+                    </h2>
 
-                <p class="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
-                  {post.data.description}
-                </p>
+                    <p class="mt-3 flex-1 text-sm leading-relaxed text-stone-600">
+                      {post.data.description}
+                    </p>
 
-                <div class="mt-4 flex items-center gap-2 border-t border-stone-100 pt-4 text-xs text-stone-400">
-                  <Icon name="lucide:calendar" class="size-3.5" />
-                  <time datetime={post.data.publishDate}>
-                    {formatDate(post.data.publishDate)}
-                  </time>
-                  <span class="text-stone-300">|</span>
-                  <span>{post.data.author}</span>
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    )}
-  </section>
+                    <div class="mt-6 flex items-center gap-2 border-t border-stone-200/70 pt-4 text-xs text-stone-500">
+                      <Icon name="lucide:calendar" class="size-3.5" />
+                      <time datetime={post.data.publishDate}>
+                        {formatDate(post.data.publishDate)}
+                      </time>
+                      <span class="text-stone-300">|</span>
+                      <span>{post.data.author}</span>
+                      <span
+                        class="btn-arrow__circle ml-auto flex size-8 items-center justify-center rounded-full bg-white text-brand-700 ring-1 ring-stone-200 transition-colors duration-300 group-hover:bg-accent-500 group-hover:text-white group-hover:ring-accent-500"
+                        aria-hidden="true"
+                      >
+                        <Icon name="lucide:arrow-right" class="size-4" />
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </Reveal>
+            );
+          })}
+        </div>
+      )
+    }
+  </Section>
 </BaseLayout>

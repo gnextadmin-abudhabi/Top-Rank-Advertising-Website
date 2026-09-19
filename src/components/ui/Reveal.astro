@@ -1,0 +1,26 @@
+---
+/**
+ * Scroll-reveal wrapper. Pairs with the single IntersectionObserver in
+ * BaseLayout, which adds `.is-in` once and then unobserves the node.
+ *
+ * Delay is an inline custom property, not a class: generated class names like
+ * `stagger-${i}` are invisible to Tailwind's content scanner and get purged.
+ */
+interface Props {
+  as?: string;
+  variant?: 'up' | 'fade' | 'left' | 'right' | 'scale' | 'clip';
+  /** Stagger offset in ms. Cap callers at ~5 steps so late items aren't stranded. */
+  delay?: number;
+  class?: string;
+}
+
+const { as: Tag = 'div', variant = 'up', delay = 0, class: className } = Astro.props;
+---
+
+<Tag
+  data-reveal={variant}
+  style={delay ? `--rv-delay:${delay}ms` : undefined}
+  class={className}
+>
+  <slot />
+</Tag>

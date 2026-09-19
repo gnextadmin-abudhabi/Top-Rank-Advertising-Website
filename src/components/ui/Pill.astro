@@ -1,0 +1,44 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  label: string;
+  icon?: string;
+  tone?: 'accent' | 'brand' | 'onDark' | 'neutral' | 'mist';
+  size?: 'sm' | 'md';
+  class?: string;
+  /** Renders an accent dot instead of an icon — the eyebrow treatment. */
+  dot?: boolean;
+}
+
+const TONES = {
+  accent: 'bg-accent-50 text-accent-700 ring-1 ring-accent-500/20',
+  brand: 'bg-brand-50 text-brand-700 ring-1 ring-brand-500/20',
+  onDark: 'bg-white/10 text-brand-100 ring-1 ring-white/15',
+  neutral: 'bg-stone-100 text-stone-700 ring-1 ring-stone-200',
+  mist: 'bg-brand-100 text-brand-800 ring-1 ring-brand-500/25',
+} as const;
+
+const SIZES = {
+  sm: 'gap-1.5 px-2.5 py-1 text-[10px]',
+  md: 'gap-2 px-3.5 py-1.5 text-[11px]',
+} as const;
+
+const { label, icon, tone = 'brand', size = 'md', class: className, dot = false } =
+  Astro.props;
+---
+
+<span
+  class={[
+    'inline-flex items-center rounded-full font-semibold uppercase tracking-[0.18em]',
+    TONES[tone],
+    SIZES[size],
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')}
+>
+  {dot && <span class="size-1.5 rounded-full bg-accent-500" aria-hidden="true"></span>}
+  {icon && <Icon name={icon} class="size-3.5" aria-hidden="true" />}
+  {label}
+</span>

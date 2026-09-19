@@ -1,0 +1,87 @@
+---
+import Pill from './Pill.astro';
+import Reveal from './Reveal.astro';
+
+interface Props {
+  eyebrow?: string;
+  eyebrowIcon?: string;
+  title: string;
+  as?: 'h1' | 'h2';
+  subcopy?: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  size?: 'hero' | 'page' | 'section';
+  max?: string;
+  class?: string;
+}
+
+const TITLE_SIZES = {
+  // Outfit carries weight 700 via the .font-display rule in global.css, so
+  // these only need to set size and tracking.
+  hero: 'font-display text-[2.6rem] leading-[1.05] tracking-tight sm:text-6xl md:text-7xl lg:text-[4.75rem]',
+  page: 'font-display text-4xl leading-[1.08] tracking-tight sm:text-5xl md:text-6xl',
+  section: 'font-display text-3xl leading-[1.12] tracking-tight sm:text-4xl md:text-5xl',
+} as const;
+
+const {
+  eyebrow,
+  eyebrowIcon,
+  title,
+  as: Tag = 'h2',
+  subcopy,
+  align = 'center',
+  tone = 'light',
+  size = 'section',
+  max = 'max-w-2xl',
+  class: className,
+} = Astro.props;
+
+const isDark = tone === 'dark';
+const alignment = align === 'center' ? 'text-center' : 'text-left';
+const subMax = align === 'center' ? `mx-auto ${max}` : max;
+---
+
+<div class={[alignment, className].filter(Boolean).join(' ')}>
+  {
+    eyebrow && (
+      <Reveal variant="fade" class={align === 'center' ? 'flex justify-center' : ''}>
+        <Pill
+          label={eyebrow}
+          icon={eyebrowIcon}
+          dot={!eyebrowIcon}
+          tone={isDark ? 'onDark' : 'brand'}
+        />
+      </Reveal>
+    )
+  }
+  <Reveal variant="up" delay={eyebrow ? 90 : 0}>
+    <Tag
+      class={[
+        TITLE_SIZES[size],
+        eyebrow ? 'mt-5' : '',
+        isDark ? 'text-white' : 'text-brand-900',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {title}
+    </Tag>
+  </Reveal>
+  {
+    subcopy && (
+      <Reveal variant="up" delay={180}>
+        <p
+          class={[
+            'mt-4 text-base leading-relaxed sm:text-lg',
+            subMax,
+            isDark ? 'text-brand-200' : 'text-stone-600',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          {subcopy}
+        </p>
+      </Reveal>
+    )
+  }
+</div>

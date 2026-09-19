@@ -11,9 +11,12 @@ interface Props {
   ogImage?: string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
+  /** Above-the-fold image to preload, e.g. a hero. Improves LCP. */
+  preloadImage?: string;
 }
 
-const { title, description, canonicalUrl, ogImage, schema, noindex } = Astro.props;
+const { title, description, canonicalUrl, ogImage, schema, noindex, preloadImage } =
+  Astro.props;
 ---
 
 <!doctype html>
@@ -26,6 +29,9 @@ const { title, description, canonicalUrl, ogImage, schema, noindex } = Astro.pro
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-M2JJRNW8');</script>
     <!-- End Google Tag Manager -->
+    <!-- Marks JS availability before first paint so the reveal animations in
+         global.css only ever hide content when we can also reveal it. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -34,11 +40,15 @@ const { title, description, canonicalUrl, ogImage, schema, noindex } = Astro.pro
     <link rel="icon" href="/images/logo.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/images/logo.png" />
 
-    <!-- Google Fonts: DM Serif Display + DM Sans -->
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />
+    )}
+
+    <!-- Google Fonts: Outfit (headings) + DM Sans (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap"
       rel="stylesheet"
     />
 
@@ -63,5 +73,56 @@ const { title, description, canonicalUrl, ogImage, schema, noindex } = Astro.pro
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // Single motion runtime shared by all pages: scroll reveals, count-ups
+      // and hairline wipes. One observer, each node unobserved after it fires.
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealNodes = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const counters = document.querySelectorAll<HTMLElement>('[data-countup]');
+
+      function runCounter(el: HTMLElement) {
+        const target = Number(el.dataset.countup || '0');
+        const duration = Number(el.dataset.countupDuration || '1400');
+        const useGrouping = el.dataset.countupFormat === 'comma';
+        const format = (n: number) =>
+          useGrouping ? Math.round(n).toLocaleString('en-US') : String(Math.round(n));
+
+        if (reduceMotion) {
+          el.textContent = format(target);
+          return;
+        }
+
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / duration, 1);
+          // easeOutExpo, matching the --rv-ease curve used by the reveals.
+          const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+          el.textContent = format(target * eased);
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        revealNodes.forEach((n) => n.classList.add('is-in'));
+        counters.forEach(runCounter);
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const el = entry.target as HTMLElement;
+              el.classList.add('is-in');
+              if (el.hasAttribute('data-countup')) runCounter(el);
+              io.unobserve(el); // fire once; never re-runs on scroll
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0 }
+        );
+        revealNodes.forEach((n) => io.observe(n));
+        counters.forEach((n) => io.observe(n));
+      }
+    </script>
   </body>
 </html>

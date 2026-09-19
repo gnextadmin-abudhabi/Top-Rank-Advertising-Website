@@ -3,10 +3,19 @@ import { Icon } from 'astro-icon/components';
 import { business } from '../../data/business';
 import { serviceTypes, getServiceBySlug } from '../../data/serviceTypes';
 import { serviceAreas } from '../../data/serviceAreas';
-import { serviceUrl, comboUrl, contactUrl } from '../../lib/urls';
+import { comboUrl, contactUrl } from '../../lib/urls';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import SeoFaq from '../../components/SeoFaq.astro';
+
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Reveal from '../../components/ui/Reveal.astro';
+import Pill from '../../components/ui/Pill.astro';
+import MediaFrame from '../../components/ui/MediaFrame.astro';
+import ProcessSteps from '../../components/ui/ProcessSteps.astro';
+import AreaCard from '../../components/ui/AreaCard.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 import type { ServiceType } from '../../data/serviceTypes';
 
@@ -68,7 +77,12 @@ const schema = {
 };
 ---
 
-<BaseLayout title={pageTitle} description={metaDescription} schema={schema}>
+<BaseLayout
+  title={pageTitle}
+  description={metaDescription}
+  schema={schema}
+  preloadImage={service.image.src}
+>
   <Breadcrumbs
     crumbs={[
       { label: 'Services', href: '/services/' },
@@ -77,130 +91,114 @@ const schema = {
   />
 
   <!-- Hero section -->
-  <section class="mx-auto max-w-7xl px-5 pb-12 pt-8 lg:px-8">
-    <div class="lg:flex lg:items-start lg:gap-12">
-      <div class="lg:flex-1">
-        <h1 class="font-display text-3xl text-brand-900 sm:text-4xl lg:text-5xl">
-          {pageTitle}
-        </h1>
-
-        <p class="mt-6 max-w-3xl text-lg leading-relaxed text-stone-600">
-          {service.description}
-        </p>
-
-        <div class="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-50 px-5 py-3 text-sm font-medium text-brand-800 ring-1 ring-brand-200/60">
-          <Icon name="lucide:banknote" class="size-4 text-brand-500" />
-          Typical project range: AED {service.priceRange.min.toLocaleString()} - AED {service.priceRange.max.toLocaleString()}
-        </div>
+  <section class="on-dark relative overflow-hidden bg-gradient-to-br from-brand-900 to-brand-800">
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(100,194,182,0.15),_transparent_70%)]"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="relative mx-auto grid max-w-site items-center gap-10 px-5 py-14 sm:px-6 md:grid-cols-12 md:px-8 md:py-20"
+    >
+      <div class="md:col-span-7">
+        <Reveal variant="fade">
+          <Pill label={`Professional ${service.name}`} icon={service.icon} tone="onDark" />
+        </Reveal>
+        <Reveal variant="clip" delay={80}>
+          <h1
+            class="mt-5 font-display text-4xl leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl"
+          >
+            {pageTitle}
+          </h1>
+        </Reveal>
+        <Reveal variant="up" delay={200}>
+          <p class="mt-6 max-w-2xl text-base leading-relaxed text-brand-200 sm:text-lg">
+            {service.description}
+          </p>
+        </Reveal>
+        <Reveal variant="up" delay={300}>
+          <div
+            class="mt-7 inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 text-sm font-medium text-white ring-1 ring-white/20"
+          >
+            <Icon name="lucide:banknote" class="size-4 text-accent-400" />
+            Typical project range: AED {service.priceRange.min.toLocaleString()} - AED {
+              service.priceRange.max.toLocaleString()
+            }
+          </div>
+        </Reveal>
       </div>
 
-      <div class="mt-8 lg:mt-0 lg:w-96 lg:shrink-0">
-        <img
-          src={service.image}
-          alt={`${service.name} service by ${business.name}`}
-          class="rounded-xl shadow-lg"
-          width="1024"
-          height="1024"
-          loading="eager"
-        />
+      <div class="md:col-span-5">
+        <Reveal variant="scale" delay={160}>
+          <MediaFrame
+            src={service.image}
+            alt={`${service.name} service by ${business.name}`}
+            ratio="4/3"
+            priority
+            sizes="(min-width: 768px) 40vw, 100vw"
+            class="shadow-brand-lg ring-1 ring-white/10"
+          />
+        </Reveal>
       </div>
     </div>
   </section>
 
   <!-- Process steps section -->
-  <section class="border-t border-stone-200/60 bg-white py-16">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
-        Our {service.name} Process
-      </h2>
-      <p class="mt-3 max-w-2xl text-stone-600">
-        Every project follows a clear, proven process so you know exactly what to expect from start to finish.
-      </p>
-
-      <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {service.processSteps.map((step, index) => (
-          <div class="relative rounded-xl border border-stone-200/60 bg-stone-50 p-6">
-            <div class="flex size-10 items-center justify-center rounded-full bg-brand-800 text-sm font-bold text-white">
-              {index + 1}
-            </div>
-
-            <h3 class="mt-4 text-base font-semibold text-stone-900">
-              {step.title}
-            </h3>
-
-            <p class="mt-2 text-sm leading-relaxed text-stone-600">
-              {step.description}
-            </p>
-          </div>
-        ))}
-      </div>
+  <Section tone="plain" size="lg">
+    <SectionHeading
+      eyebrow="How it works"
+      title={`Our ${service.name} Process`}
+      subcopy="Every project follows a clear, proven process so you know exactly what to expect from start to finish."
+      align="left"
+      max="max-w-2xl"
+    />
+    <div class="mt-12">
+      <ProcessSteps steps={service.processSteps} layout="grid" />
     </div>
-  </section>
+  </Section>
 
   <!-- Areas we serve for this service -->
-  <section class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-    <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
-      Areas We Serve for {service.name}
-    </h2>
-    <p class="mt-3 max-w-2xl text-stone-600">
-      We provide {service.name.toLowerCase()} across Abu Dhabi and Al Ain. Select your area for local pricing and availability.
-    </p>
-
-    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {serviceAreas.map((area) => (
-        <a
-          href={comboUrl(area.slug, service.slug)}
-          class="group rounded-xl border border-stone-200/60 bg-white p-5 transition-all hover:border-brand-200 hover:shadow-md"
-        >
-          <div class="flex items-center gap-3">
-            <Icon name="lucide:map-pin" class="size-5 text-brand-500" />
-            <span class="font-semibold text-stone-800 group-hover:text-brand-800">
-              {area.name}
-            </span>
-          </div>
-          <p class="mt-2 text-sm text-stone-500">
-            {area.county}
-          </p>
-          <p class="mt-1 text-xs text-stone-400">
-            Response time: {area.responseTime}
-          </p>
-        </a>
-      ))}
+  <Section tone="shade" size="lg">
+    <SectionHeading
+      eyebrow="Coverage"
+      title={`Areas We Serve for ${service.name}`}
+      subcopy={`We provide ${service.name.toLowerCase()} across Abu Dhabi and Al Ain. Select your area for local pricing and availability.`}
+      align="left"
+      max="max-w-2xl"
+    />
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {
+        serviceAreas.map((area, i) => (
+          <AreaCard
+            area={area}
+            href={comboUrl(area.slug, service.slug)}
+            variant="compact"
+            headingLevel="h3"
+            responseLabel={`Response time: ${area.responseTime}`}
+            delay={Math.min(i, 5) * 70}
+          />
+        ))
+      }
     </div>
-  </section>
+  </Section>
 
-  <!-- FAQ section -->
+  <!-- FAQ section. `mussafah` is deliberately hardcoded here. -->
   <div class="border-t border-stone-200/60 bg-white">
     <SeoFaq area={mussafah} service={service} />
   </div>
 
   <!-- CTA section -->
-  <section class="bg-brand-900 py-16">
-    <div class="mx-auto max-w-4xl px-5 text-center lg:px-8">
-      <h2 class="font-display text-2xl text-white sm:text-3xl">
-        Need {service.name}?
-      </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-brand-200">
-        {business.name} serves businesses across Abu Dhabi and Al Ain. Contact us today for a project-based quotation or to schedule a consultation.
-      </p>
-      <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <a
-          href={business.whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-accent-600 hover:shadow-md"
-        >
-          <Icon name="lucide:message-circle" class="size-4" />
-          WhatsApp Us
-        </a>
-        <a
-          href={contactUrl()}
-          class="inline-flex items-center gap-2 rounded-lg border border-brand-300/40 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-800"
-        >
-          <Icon name="lucide:mail" class="size-4" />
-          Request a Quote
-        </a>
-      </div>
-    </div>
-  </section>
+  <Section tone="deep" size="md">
+    <CtaBanner
+      title={`Need ${service.name}?`}
+      body={`${business.name} serves businesses across Abu Dhabi and Al Ain. Contact us today for a project-based quotation or to schedule a consultation.`}
+      primary={{
+        label: 'WhatsApp Us',
+        href: business.whatsappHref,
+        icon: 'lucide:message-circle',
+        external: true,
+      }}
+      secondary={{ label: 'Request a Quote', href: contactUrl(), icon: 'lucide:mail' }}
+    />
+  </Section>
 </BaseLayout>

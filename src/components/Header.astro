@@ -1,81 +1,81 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { business } from '../data/business';
+
+// One source of truth for both the desktop nav and the mobile drawer.
+const navLinks = [
+  { href: '/services/', label: 'Services', icon: 'lucide:printer' },
+  { href: '/areas/', label: 'Service Areas', icon: 'lucide:map-pin' },
+  { href: '/about/', label: 'About', icon: 'lucide:info' },
+  { href: '/blog/', label: 'Insights', icon: 'lucide:file-text' },
+  { href: '/contact/', label: 'Contact', icon: 'lucide:mail' },
+];
+
+// trailingSlash is 'always', so a prefix match is enough to mark the section.
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
 <header
   class="sticky top-0 z-50 w-full border-b border-stone-200/60 bg-white/80 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300"
   id="site-header"
 >
-  <!-- Main nav bar -->
-  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
-    <!-- Logo -->
-    <a href="/" class="group flex items-center gap-2.5">
+  <div
+    class="mx-auto flex h-16 max-w-site items-center justify-between px-5 sm:px-6 md:px-8"
+  >
+    <a href="/" class="group flex items-center gap-2.5" aria-label="Top Rank Advertising home">
       <img
         src="/images/logo.png"
         alt="Top Rank Advertising & Designing LLC logo"
-        class="h-9 w-auto"
+        class="h-9 w-auto transition-transform duration-400 ease-out-expo group-hover:scale-[1.03] md:h-10"
         width="588"
         height="244"
+        fetchpriority="high"
       />
     </a>
 
-    <!-- Desktop navigation -->
-    <nav class="hidden items-center gap-1 lg:flex">
-      <a
-        href="/services/"
-        class="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        Services
-      </a>
-      <a
-        href="/areas/"
-        class="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        Service Areas
-      </a>
-      <a
-        href="/about/"
-        class="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        About
-      </a>
-      <a
-        href="/contact/"
-        class="rounded-lg px-3.5 py-2 text-sm font-medium text-stone-600 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        Contact
-      </a>
+    <nav class="hidden items-center gap-6 lg:flex" aria-label="Main">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class={`nav-link py-2 text-sm font-medium transition-colors duration-300 hover:text-brand-800 ${
+              isActive(link.href) ? 'text-brand-900' : 'text-stone-600'
+            }`}
+          >
+            {link.label}
+          </a>
+        ))
+      }
     </nav>
 
-    <!-- Right side actions -->
     <div class="flex items-center gap-2">
-      <!-- WhatsApp CTA -->
       <a
         href={business.whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
-        class="hidden items-center gap-2 rounded-lg bg-accent-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-accent-600 hover:shadow-md sm:inline-flex"
+        class="group inline-flex items-center gap-2 rounded-full bg-accent-500 px-3.5 py-2 text-sm font-semibold text-white shadow-brand-sm transition-colors duration-300 hover:bg-accent-600 sm:px-4"
       >
         <Icon name="lucide:message-circle" class="size-4" />
         <span class="hidden sm:inline">WhatsApp</span>
       </a>
 
-      <!-- Phone CTA -->
       <a
         href={business.phoneHref}
-        class="inline-flex items-center gap-2 rounded-lg bg-brand-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md"
+        class="inline-flex items-center gap-2 rounded-full bg-brand-800 px-3.5 py-2 text-sm font-semibold text-white shadow-brand-sm transition-colors duration-300 hover:bg-brand-900 sm:px-4"
       >
         <Icon name="lucide:phone" class="size-4" />
-        <span class="hidden sm:inline">{business.phone}</span>
-        <span class="sm:hidden">Call</span>
+        <span class="hidden md:inline">{business.phone}</span>
+        <span class="md:hidden">Call</span>
       </a>
 
-      <!-- Mobile menu button -->
       <button
         type="button"
-        class="inline-flex size-10 items-center justify-center rounded-lg text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-700 lg:hidden"
-        aria-label="Toggle menu"
+        class="inline-flex size-10 items-center justify-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-700 lg:hidden"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
         id="mobile-menu-btn"
       >
         <Icon name="lucide:menu" class="size-5" id="menu-icon-open" />
@@ -84,56 +84,48 @@ import { business } from '../data/business';
     </div>
   </div>
 
-  <!-- Mobile drawer -->
-  <div class="hidden border-t border-stone-100 bg-white lg:hidden" id="mobile-menu">
-    <nav class="mx-auto max-w-7xl space-y-1 px-5 py-4">
-      <a
-        href="/services/"
-        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        <Icon name="lucide:printer" class="size-4 text-stone-400" />
-        Services
-      </a>
-      <a
-        href="/areas/"
-        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        <Icon name="lucide:map-pin" class="size-4 text-stone-400" />
-        Service Areas
-      </a>
-      <a
-        href="/about/"
-        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        <Icon name="lucide:info" class="size-4 text-stone-400" />
-        About
-      </a>
-      <a
-        href="/contact/"
-        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition-colors hover:bg-brand-50 hover:text-brand-800"
-      >
-        <Icon name="lucide:mail" class="size-4 text-stone-400" />
-        Contact
-      </a>
-      <div class="grid grid-cols-2 gap-2 pt-2">
-        <a
-          href={business.whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex items-center justify-center gap-2 rounded-lg bg-accent-500 px-4 py-2.5 text-sm font-medium text-white"
-        >
-          <Icon name="lucide:message-circle" class="size-4" />
-          WhatsApp
-        </a>
-        <a
-          href={business.phoneHref}
-          class="flex items-center justify-center gap-2 rounded-lg bg-brand-800 px-4 py-2.5 text-sm font-medium text-white"
-        >
-          <Icon name="lucide:phone" class="size-4" />
-          Call
-        </a>
-      </div>
-    </nav>
+  <!-- Drawer animates via grid-template-rows so it needs no fixed height. -->
+  <div
+    class="grid grid-rows-[0fr] overflow-hidden border-stone-100 bg-white transition-[grid-template-rows] duration-400 ease-out-expo data-[open=true]:grid-rows-[1fr] data-[open=true]:border-t lg:hidden"
+    id="mobile-menu"
+    data-open="false"
+  >
+    <div class="min-h-0">
+      <nav class="mx-auto max-w-site space-y-1 px-5 py-4 sm:px-6" aria-label="Mobile">
+        {
+          navLinks.map((link) => (
+            <a
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+              class={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-50 hover:text-brand-800 ${
+                isActive(link.href) ? 'bg-brand-50 text-brand-800' : 'text-stone-700'
+              }`}
+            >
+              <Icon name={link.icon} class="size-4 text-stone-400" />
+              {link.label}
+            </a>
+          ))
+        }
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <a
+            href={business.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center justify-center gap-2 rounded-full bg-accent-500 px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            <Icon name="lucide:message-circle" class="size-4" />
+            WhatsApp
+          </a>
+          <a
+            href={business.phoneHref}
+            class="flex items-center justify-center gap-2 rounded-full bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            <Icon name="lucide:phone" class="size-4" />
+            Call
+          </a>
+        </div>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -142,22 +134,81 @@ import { business } from '../data/business';
   const menu = document.getElementById('mobile-menu');
   const iconOpen = document.getElementById('menu-icon-open');
   const iconClose = document.getElementById('menu-icon-close');
-
-  btn?.addEventListener('click', () => {
-    menu?.classList.toggle('hidden');
-    iconOpen?.classList.toggle('hidden');
-    iconClose?.classList.toggle('hidden');
-  });
-
   const header = document.getElementById('site-header');
+
+  if (btn && menu) {
+    const getLinks = () => Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'));
+
+    const setOpen = (open: boolean) => {
+      menu.dataset.open = String(open);
+      btn.setAttribute('aria-expanded', String(open));
+      iconOpen?.classList.toggle('hidden', open);
+      iconClose?.classList.toggle('hidden', !open);
+
+      if (open) {
+        // Compensate for the vanishing scrollbar so the page does not shift.
+        const gap = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        if (gap > 0) document.body.style.paddingRight = `${gap}px`;
+        getLinks()[0]?.focus();
+      } else {
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }
+    };
+
+    const isOpen = () => menu.dataset.open === 'true';
+
+    const close = (returnFocus = false) => {
+      if (!isOpen()) return;
+      setOpen(false);
+      if (returnFocus) btn.focus();
+    };
+
+    btn.addEventListener('click', () => setOpen(!isOpen()));
+
+    // Every close path must restore body scroll, or the page locks up.
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') {
+        close(true);
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      // Focus trap across the drawer links plus the toggle button.
+      const focusables = [...getLinks(), btn];
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isOpen()) return;
+      const target = e.target as Node;
+      if (!menu.contains(target) && !btn.contains(target)) close();
+    });
+
+    // Resizing past the lg: breakpoint hides the drawer via CSS, so its state
+    // must be reset or body scroll stays locked.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) close();
+    });
+  }
+
   window.addEventListener(
     'scroll',
     () => {
-      if (window.scrollY > 8) {
-        header?.classList.add('shadow-sm');
-      } else {
-        header?.classList.remove('shadow-sm');
-      }
+      header?.classList.toggle('shadow-brand-sm', window.scrollY > 8);
     },
     { passive: true },
   );

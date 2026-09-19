@@ -1,4 +1,5 @@
 ---
+import MediaFrame from '../../../components/ui/MediaFrame.astro';
 import { business } from '../../../data/business';
 import { serviceTypes } from '../../../data/serviceTypes';
 import { serviceAreas, getNearbyAreas } from '../../../data/serviceAreas';
@@ -8,6 +9,12 @@ import { serviceUrl, areaUrl, comboUrl, contactUrl } from '../../../lib/urls';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import SeoFaq from '../../../components/SeoFaq.astro';
+
+import Reveal from '../../../components/ui/Reveal.astro';
+import Pill from '../../../components/ui/Pill.astro';
+import ProcessSteps from '../../../components/ui/ProcessSteps.astro';
+import FeatureCard from '../../../components/ui/FeatureCard.astro';
+import CtaBanner from '../../../components/ui/CtaBanner.astro';
 import SeoRelatedLinks from '../../../components/SeoRelatedLinks.astro';
 import SeoServiceAreas from '../../../components/SeoServiceAreas.astro';
 import SeoTestimonials from '../../../components/SeoTestimonials.astro';
@@ -100,6 +107,7 @@ const schema = {
   description={pageDescription}
   canonicalUrl={`${business.website}${comboUrl(area.slug, service.slug)}`}
   schema={schema}
+  preloadImage={service.image.src}
 >
   <Breadcrumbs
     crumbs={[
@@ -109,204 +117,185 @@ const schema = {
     ]}
   />
 
-  <article class="mx-auto max-w-7xl px-5 lg:px-8">
-    <!-- ============ HERO / H1 ============ -->
-    <header class="pb-10 pt-6 lg:pt-10">
-      <div class="lg:flex lg:items-start lg:gap-10">
-        <div class="lg:flex-1">
-          <div class="flex items-center gap-3 text-brand-600">
-            <Icon name={service.icon} class="size-8" />
-            <span class="text-sm font-semibold uppercase tracking-wide">
-              Professional {service.name}
-            </span>
-          </div>
-          <h1 class="mt-3 font-display text-3xl text-brand-900 sm:text-4xl lg:text-5xl">
-            {service.name} in {area.name}
-          </h1>
-          <p class="mt-4 max-w-3xl text-lg leading-relaxed text-stone-600">
-            {pageDescription}
-          </p>
-        </div>
-        <div class="mt-6 lg:mt-0 lg:w-80 lg:shrink-0">
-          <img
-            src={service.image}
-            alt={`${service.name} in ${area.name}`}
-            class="rounded-xl shadow-lg"
-            width="1024"
-            height="1024"
-            loading="eager"
-          />
-        </div>
-      </div>
-    </header>
-
-    <!-- ============ SERVICE IMAGE ============ -->
-    <div class="mb-10 overflow-hidden rounded-xl">
-      <img
-        src={service.image}
-        alt={`${service.name} service in ${area.name}`}
-        class="h-64 w-full object-cover sm:h-80 lg:h-96"
-        width="1408"
-        height="768"
-        loading="eager"
-      />
+  <!-- ============ HERO ============ -->
+  <!-- Two columns instead of a text block above a full-bleed band: the image
+       is sized to the copy beside it rather than dominating the page. -->
+  <section class="on-dark relative overflow-hidden bg-gradient-to-br from-brand-900 to-brand-800">
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(100,194,182,0.15),_transparent_70%)]"
+      aria-hidden="true"
+    >
     </div>
 
-    <!-- ============ DESCRIPTION SECTION ============ -->
-    <section class="prose-editorial max-w-3xl pb-12">
-      <h2>Expert {service.name} Serving {area.name} and {area.county}</h2>
-      <p>
-        {service.description}
-      </p>
-      <p>
-        At {business.name}, we have been supporting businesses in {area.name} and the greater {area.county} area with professional printing and branding solutions. As a locally based B2B provider, we understand the unique needs of corporate, retail, construction, and event clients in this region. {area.description}
-      </p>
-      {nearbyAreas.length > 0 && (
-        <p>
-          In addition to {area.name}, our {service.name.toLowerCase()} service covers nearby
-          business communities including {nearbyNames}. No matter where your project is located, you
-          can count on fast response times and professional workmanship from our team.
-        </p>
-      )}
-    </section>
-
-    <!-- ============ PRICE SECTION ============ -->
-    <section class="pb-12">
-      <div class="rounded-xl border border-stone-200 bg-white p-8 lg:p-10">
-        <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
-          What Does {service.name} Cost in {area.name}?
-        </h2>
-        <div class="mt-6 flex items-baseline gap-2">
-          <span class="font-display text-4xl text-brand-700">
-            AED {service.priceRange.min.toLocaleString()}
-          </span>
-          <span class="text-2xl text-stone-400">–</span>
-          <span class="font-display text-4xl text-brand-700">
-            AED {service.priceRange.max.toLocaleString()}
-          </span>
-        </div>
-        <p class="mt-3 text-sm text-stone-500">
-          Typical project range for {service.name.toLowerCase()} in {area.name}. Final cost depends on quantities,
-          materials, finishing, and complexity. B2B volume pricing available.
-        </p>
-        <div class="mt-6 flex flex-wrap items-center gap-4">
-          <div class="flex items-center gap-2 text-sm text-stone-600">
-            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
-            <span>Free project consultation</span>
-          </div>
-          <div class="flex items-center gap-2 text-sm text-stone-600">
-            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
-            <span>No hidden fees</span>
-          </div>
-          <div class="flex items-center gap-2 text-sm text-stone-600">
-            <Icon name="lucide:check-circle" class="size-5 text-brand-600" />
-            <span>Project-based quotation</span>
-          </div>
-        </div>
+    <div
+      class="relative mx-auto grid max-w-site items-center gap-10 px-5 py-14 sm:px-6 md:px-8 md:py-20 lg:grid-cols-12 lg:gap-14"
+    >
+      <div class="lg:col-span-7">
+        <Reveal variant="fade">
+          <Pill label={`Professional ${service.name}`} icon={service.icon} tone="onDark" />
+        </Reveal>
+        <Reveal variant="clip" delay={80}>
+          <h1
+            class="mt-5 font-display text-4xl leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl"
+          >
+            {service.name} in {area.name}
+          </h1>
+        </Reveal>
+        <Reveal variant="up" delay={200}>
+          <p class="mt-6 max-w-2xl text-base leading-relaxed text-brand-200 sm:text-lg">
+            {pageDescription}
+          </p>
+        </Reveal>
       </div>
-    </section>
+
+      <div class="lg:col-span-5">
+        <Reveal variant="scale" delay={160}>
+          <MediaFrame
+            src={service.image}
+            alt={`${service.name} service in ${area.name}`}
+            ratio="4/3"
+            rounded="2xl"
+            priority
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            class="shadow-brand-lg ring-1 ring-white/10"
+          />
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-site px-5 pt-14 sm:px-6 md:px-8 md:pt-20">
+    <!-- ============ DESCRIPTION + PRICE ============ -->
+    <!-- Prose and price sit side by side, so the copy column no longer leaves
+         half the page empty and the price panel is no longer oversized. -->
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <Reveal variant="up" as="div" class="prose-editorial lg:col-span-7">
+        <h2>Expert {service.name} Serving {area.name} and {area.county}</h2>
+        <p>
+          {service.description}
+        </p>
+        <p>
+          At {business.name}, we have been supporting businesses in {area.name} and the greater {area.county} area with professional printing and branding solutions. As a locally based B2B provider, we understand the unique needs of corporate, retail, construction, and event clients in this region. {area.description}
+        </p>
+        {nearbyAreas.length > 0 && (
+          <p>
+            In addition to {area.name}, our {service.name.toLowerCase()} service covers nearby
+            business communities including {nearbyNames}. No matter where your project is located, you
+            can count on fast response times and professional workmanship from our team.
+          </p>
+        )}
+      </Reveal>
+
+      <Reveal variant="right" delay={120} as="aside" class="lg:col-span-5">
+        <div class="rounded-3xl bg-brand-50 p-7 ring-1 ring-brand-500/15 sm:p-8 lg:sticky lg:top-28">
+          <h2 class="font-display text-xl tracking-tight text-brand-900 sm:text-2xl">
+            What Does {service.name} Cost in {area.name}?
+          </h2>
+
+          <div class="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <span class="font-display text-3xl tracking-tight text-brand-700 sm:text-4xl">
+              AED {service.priceRange.min.toLocaleString()}
+            </span>
+            <span class="text-xl text-brand-400">&ndash;</span>
+            <span class="font-display text-3xl tracking-tight text-brand-700 sm:text-4xl">
+              AED {service.priceRange.max.toLocaleString()}
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-relaxed text-stone-600">
+            Typical project range for {service.name.toLowerCase()} in {area.name}. Final cost
+            depends on quantities, materials, finishing, and complexity. B2B volume pricing
+            available.
+          </p>
+
+          <ul class="mt-6 space-y-3 border-t border-brand-500/15 pt-5">
+            {
+              ['Free project consultation', 'No hidden fees', 'Project-based quotation'].map(
+                (item) => (
+                  <li class="flex items-center gap-2.5 text-sm font-medium text-brand-800">
+                    <Icon name="lucide:check-circle" class="size-4 shrink-0 text-accent-500" />
+                    <span>{item}</span>
+                  </li>
+                ),
+              )
+            }
+          </ul>
+        </div>
+      </Reveal>
+    </div>
 
     <!-- ============ PROCESS STEPS ============ -->
-    <section class="pb-16">
-      <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
-        Our {service.name} Process
-      </h2>
-      <p class="mt-3 max-w-2xl text-stone-600">
-        Every project follows a clear, proven process so you always know what to expect.
-      </p>
-
-      <div class="mt-10 grid gap-6 sm:grid-cols-2">
-        {service.processSteps.map((step, index) => (
-          <div class="relative rounded-xl border border-stone-200 bg-white p-6">
-            <div class="mb-4 flex size-10 items-center justify-center rounded-full bg-brand-50 font-display text-lg text-brand-700">
-              {index + 1}
-            </div>
-            <h3 class="font-display text-lg text-brand-900">{step.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-stone-600">
-              {step.description}
-            </p>
-          </div>
-        ))}
+    <section class="pb-16 pt-16 md:pt-20">
+      <Reveal variant="up">
+        <h2 class="font-display text-2xl tracking-tight text-brand-900 sm:text-3xl md:text-4xl">
+          Our {service.name} Process
+        </h2>
+      </Reveal>
+      <Reveal variant="up" delay={90}>
+        <p class="mt-3 max-w-2xl text-stone-600">
+          Every project follows a clear, proven process so you always know what to expect.
+        </p>
+      </Reveal>
+      <div class="mt-10">
+        <ProcessSteps steps={service.processSteps} layout="grid" />
       </div>
     </section>
 
     <!-- ============ WHY CHOOSE US ============ -->
     <section class="pb-16">
-      <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
-        Why Choose {business.name} in {area.name}?
-      </h2>
-
-      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl border border-stone-200 bg-white p-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-50">
-            <Icon name="lucide:check-circle" class="size-6 text-brand-700" />
-          </div>
-          <h3 class="mt-4 font-semibold text-brand-900">End-to-End Service</h3>
-          <p class="mt-2 text-sm text-stone-600">
-            From design to delivery and installation, we handle every step.
-          </p>
-        </div>
-
-        <div class="rounded-xl border border-stone-200 bg-white p-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-50">
-            <Icon name="lucide:map-pin" class="size-6 text-brand-700" />
-          </div>
-          <h3 class="mt-4 font-semibold text-brand-900">Locally Based</h3>
-          <p class="mt-2 text-sm text-stone-600">
-            Workshop in Mussafah with fast delivery across {area.county}.
-          </p>
-        </div>
-
-        <div class="rounded-xl border border-stone-200 bg-white p-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-50">
-            <Icon name="lucide:clock" class="size-6 text-brand-700" />
-          </div>
-          <h3 class="mt-4 font-semibold text-brand-900">Fast Response</h3>
-          <p class="mt-2 text-sm text-stone-600">
-            {area.responseTime} response time to {area.name}. We meet deadlines.
-          </p>
-        </div>
-
-        <div class="rounded-xl border border-stone-200 bg-white p-6 text-center">
-          <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-brand-50">
-            <Icon name="lucide:badge-check" class="size-6 text-brand-700" />
-          </div>
-          <h3 class="mt-4 font-semibold text-brand-900">Quality Guaranteed</h3>
-          <p class="mt-2 text-sm text-stone-600">
-            We stand behind every product with quality checks at every stage.
-          </p>
-        </div>
+      <Reveal variant="up">
+        <h2 class="font-display text-2xl tracking-tight text-brand-900 sm:text-3xl md:text-4xl">
+          Why Choose {business.name} in {area.name}?
+        </h2>
+      </Reveal>
+      <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <FeatureCard
+          icon="lucide:check-circle"
+          title="End-to-End Service"
+          detail="From design to delivery and installation, we handle every step."
+          delay={0}
+        />
+        <FeatureCard
+          icon="lucide:map-pin"
+          title="Locally Based"
+          detail={`Workshop in Mussafah with fast delivery across ${area.county}.`}
+          delay={80}
+          class="lg:translate-y-6"
+        />
+        <FeatureCard
+          icon="lucide:clock"
+          title="Fast Response"
+          detail={`${area.responseTime} response time to ${area.name}. We meet deadlines.`}
+          delay={160}
+          class="lg:translate-y-6"
+        />
+        <FeatureCard
+          icon="lucide:badge-check"
+          title="Quality Guaranteed"
+          detail="We stand behind every product with quality checks at every stage."
+          delay={240}
+        />
       </div>
     </section>
 
     <!-- ============ CTA SECTION ============ -->
     <section class="pb-16">
-      <div class="rounded-2xl bg-gradient-to-br from-brand-900 to-brand-800 p-8 text-center lg:p-12">
-        <h2 class="font-display text-2xl text-white sm:text-3xl">
-          Ready to Schedule {service.name} in {area.name}?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-brand-200">
-          Whether you need a single item or a large volume order, our team is here to help. Contact us today for a project-based quotation.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href={business.whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-accent-600 hover:shadow-xl"
-          >
-            <Icon name="lucide:message-circle" class="size-5" />
-            WhatsApp {business.phone}
-          </a>
-          <a
-            href={contactUrl()}
-            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
-          >
-            <Icon name="lucide:mail" class="size-5" />
-            Request a Quotation
-          </a>
-        </div>
-      </div>
+      <CtaBanner
+        tone="panel"
+        title={`Ready to Schedule ${service.name} in ${area.name}?`}
+        body="Whether you need a single item or a large volume order, our team is here to help. Contact us today for a project-based quotation."
+        primary={{
+          label: `WhatsApp ${business.phone}`,
+          href: business.whatsappHref,
+          icon: 'lucide:message-circle',
+          external: true,
+        }}
+        secondary={{
+          label: 'Request a Quotation',
+          href: contactUrl(),
+          icon: 'lucide:mail',
+        }}
+      />
     </section>
 
     <!-- ============ SEO COMPONENTS ============ -->

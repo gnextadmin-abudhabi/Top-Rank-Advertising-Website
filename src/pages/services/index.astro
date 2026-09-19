@@ -1,10 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { Icon } from 'astro-icon/components';
 import { business } from '../../data/business';
 import { serviceTypes } from '../../data/serviceTypes';
 import { serviceUrl, contactUrl } from '../../lib/urls';
+
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import ServiceCard from '../../components/ui/ServiceCard.astro';
+import CtaBanner from '../../components/ui/CtaBanner.astro';
 
 const servicesSchema = {
   '@context': 'https://schema.org',
@@ -29,79 +33,49 @@ const servicesSchema = {
   <Breadcrumbs crumbs={[{ label: 'Services' }]} />
 
   <!-- ============ HEADER ============ -->
-  <section class="py-12 lg:py-16">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="max-w-3xl animate-fade-up">
-        <h1 class="font-display text-4xl text-brand-900 sm:text-5xl">
-          Our B2B Printing & Branding Services
-        </h1>
-        <p class="mt-4 text-lg leading-relaxed text-stone-600">
-          Whether you need a single banner for an event or a complete corporate rebrand with fleet graphics and acrylic signage, {business.name} provides end-to-end printing and branding solutions for businesses throughout Abu Dhabi and Al Ain.
-        </p>
-      </div>
-    </div>
-  </section>
+  <Section tone="paper" size="sm">
+    <SectionHeading
+      eyebrow="Our capabilities"
+      title="Our B2B Printing & Branding Services"
+      as="h1"
+      size="page"
+      align="left"
+      max="max-w-3xl"
+      subcopy={`Whether you need a single banner for an event or a complete corporate rebrand with fleet graphics and acrylic signage, ${business.name} provides end-to-end printing and branding solutions for businesses throughout Abu Dhabi and Al Ain.`}
+    />
+  </Section>
 
   <!-- ============ SERVICES GRID ============ -->
-  <section class="pb-16 lg:pb-24">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {serviceTypes.map((service, i) => (
-          <a
+  <Section tone="plain" size="lg">
+    <!-- headingLevel stays h2 here: this page's card titles are its outline. -->
+    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {
+        serviceTypes.map((service, i) => (
+          <ServiceCard
+            service={service}
             href={serviceUrl(service.slug)}
-            class={`card-hover group relative rounded-xl border border-stone-200 bg-white p-6 animate-fade-up stagger-${Math.min(i + 1, 6)}`}
-          >
-            <div class="flex size-12 items-center justify-center rounded-lg bg-brand-50 text-brand-700 transition-colors group-hover:bg-brand-100">
-              <Icon name={service.icon} class="size-6" />
-            </div>
-            <h2 class="mt-4 font-display text-lg text-brand-900">
-              {service.name}
-            </h2>
-            <p class="mt-2 text-sm leading-relaxed text-stone-600">
-              {service.shortDescription}
-            </p>
-            <div class="mt-4 flex items-center justify-between">
-              <span class="text-sm font-semibold text-brand-700">
-                From AED {service.priceRange.min.toLocaleString()}
-              </span>
-              <span class="text-xs text-stone-400">
-                Up to AED {service.priceRange.max.toLocaleString()}
-              </span>
-            </div>
-          </a>
-        ))}
-      </div>
+            variant={i >= serviceTypes.length - 2 ? 'wide' : 'photo'}
+            headingLevel="h2"
+            price="range"
+            delay={Math.min(i, 5) * 70}
+          />
+        ))
+      }
     </div>
-  </section>
+  </Section>
 
   <!-- ============ CTA ============ -->
-  <section class="bg-brand-900">
-    <div class="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
-      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div>
-          <h2 class="font-display text-3xl text-white">Not Sure What You Need?</h2>
-          <p class="mt-2 text-brand-200">
-            Contact us and describe your project. We will recommend the right services and provide a tailored quotation.
-          </p>
-        </div>
-        <div class="flex shrink-0 flex-wrap gap-4">
-          <a
-            href={business.whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-accent-600"
-          >
-            <Icon name="lucide:message-circle" class="size-5" />
-            WhatsApp
-          </a>
-          <a
-            href={contactUrl()}
-            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
-          >
-            Request a Quote
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Section tone="deep" size="md">
+    <CtaBanner
+      title="Not Sure What You Need?"
+      body="Contact us and describe your project. We will recommend the right services and provide a tailored quotation."
+      primary={{
+        label: 'WhatsApp',
+        href: business.whatsappHref,
+        icon: 'lucide:message-circle',
+        external: true,
+      }}
+      secondary={{ label: 'Request a Quote', href: contactUrl() }}
+    />
+  </Section>
 </BaseLayout>

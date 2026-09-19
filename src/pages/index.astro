@@ -6,6 +6,21 @@ import { serviceTypes } from '../data/serviceTypes';
 import { serviceAreas } from '../data/serviceAreas';
 import { serviceUrl, areaUrl, contactUrl } from '../lib/urls';
 import { reviews } from '../data/seoContent';
+import heroImage from '../assets/images/hero.webp';
+import heroInset from '../assets/images/sticker-printing.webp';
+
+import Section from '../components/ui/Section.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Reveal from '../components/ui/Reveal.astro';
+import Pill from '../components/ui/Pill.astro';
+import Button from '../components/ui/Button.astro';
+import MediaFrame from '../components/ui/MediaFrame.astro';
+import Marquee from '../components/ui/Marquee.astro';
+import StatCounter from '../components/ui/StatCounter.astro';
+import ServiceCard from '../components/ui/ServiceCard.astro';
+import AreaCard from '../components/ui/AreaCard.astro';
+import ReviewCard from '../components/ui/ReviewCard.astro';
+import CtaBanner from '../components/ui/CtaBanner.astro';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -85,408 +100,385 @@ const schema = {
     },
   ],
 };
+
+const trustSignals = [
+  { icon: 'lucide:award', label: 'End-to-End Service' },
+  { icon: 'lucide:check-circle', label: 'On-Time Delivery' },
+  { icon: 'lucide:tags', label: 'B2B Volume Pricing' },
+  { icon: 'lucide:shield-check', label: 'Quality Guaranteed' },
+];
+
+const processSteps = [
+  {
+    step: 1,
+    title: 'Share Your Brief',
+    icon: 'lucide:file-text',
+    summary: 'Send artwork or describe your project needs.',
+    detail:
+      'Share your artwork, brand guidelines, or project brief via WhatsApp, email, or phone. We confirm specifications, materials, quantities, and timeline before moving forward.',
+  },
+  {
+    step: 2,
+    title: 'Design & Proofing',
+    icon: 'lucide:pen-tool',
+    summary: 'Our team prepares files and sends proofs for approval.',
+    detail:
+      'Our designers and pre-press specialists review your files for resolution, color accuracy, and print readiness. We send digital proofs or physical swatches for your sign-off.',
+  },
+  {
+    step: 3,
+    title: 'Production at Scale',
+    icon: 'lucide:printer',
+    summary: 'We print, fabricate, or brand with quality checks at every stage.',
+    detail:
+      'Using industrial eco-solvent, UV, and laser equipment, we produce your order at scale. Quality checks happen at every stage: color matching, cutting precision, and structural integrity.',
+  },
+  {
+    step: 4,
+    title: 'Delivery & Installation',
+    icon: 'lucide:truck',
+    summary: 'Finished products delivered to your site, with install support available.',
+    detail:
+      'We carefully pack and deliver to your location across Abu Dhabi and Al Ain. For signage, banners, and acrylic displays, our installation team ensures everything is mounted perfectly.',
+  },
+];
+
+// Counters are fed only by values that already exist in src/data — nothing invented.
+// responseTime values look like "30 minutes" or "45-60 minutes", so take the
+// leading integer and use the fastest across all areas.
+const fastestResponse = Math.min(
+  ...serviceAreas
+    .map((area) => Number.parseInt(area.responseTime, 10))
+    .filter((n) => !Number.isNaN(n)),
+);
+
+const averageRating = (
+  reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+).toFixed(1);
 ---
 
 <BaseLayout
   title={`${business.name} | B2B Printing & Branding Abu Dhabi`}
   description={business.description}
   schema={schema}
+  preloadImage={heroImage.src}
 >
   <!-- ============ HERO ============ -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-brand-900 to-brand-800">
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(100,194,182,0.15),_transparent_70%)]" />
+  <section
+    class="relative overflow-hidden bg-gradient-to-br from-brand-900 to-brand-800 on-dark"
+  >
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(100,194,182,0.15),_transparent_70%)]"
+      aria-hidden="true"
+    >
+    </div>
 
-    <div class="relative mx-auto flex max-w-7xl items-center gap-12 px-5 py-20 lg:px-8 lg:py-28">
-      <div class="max-w-2xl flex-1 animate-fade-up">
-        <h1 class="font-display text-4xl text-white sm:text-5xl lg:text-6xl">
-          B2B Printing & Branding for Abu Dhabi Businesses
-        </h1>
-        <p class="mt-6 text-lg leading-relaxed text-brand-200">
-          {business.tagline} Eco-solvent banners, stickers, corporate branding, and custom acrylic fabrication for corporate, retail, construction, and event clients across Abu Dhabi and Al Ain.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a
-            href={business.whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-accent-600 hover:shadow-xl"
+    <div
+      class="relative mx-auto grid max-w-site items-center gap-12 px-5 py-16 sm:px-6 sm:py-20 md:px-8 lg:grid-cols-12 lg:gap-10 lg:py-28"
+    >
+      <div class="lg:col-span-6">
+        <Reveal variant="fade">
+          <Pill label={business.serviceRadius} tone="onDark" dot />
+        </Reveal>
+        <Reveal variant="clip" delay={80}>
+          <h1
+            class="mt-6 font-display text-[2.6rem] leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl lg:text-[4.25rem]"
           >
-            <Icon name="lucide:message-circle" class="size-5" />
-            WhatsApp Us
-          </a>
-          <a
-            href={business.phoneHref}
-            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition-all hover:bg-white/20"
-          >
-            <Icon name="lucide:phone" class="size-5" />
-            Call {business.phone}
-          </a>
-        </div>
+            B2B Printing &amp; Branding for Abu Dhabi Businesses
+          </h1>
+        </Reveal>
+        <Reveal variant="up" delay={240}>
+          <p class="mt-6 max-w-xl text-base leading-relaxed text-brand-200 sm:text-lg md:text-xl">
+            {business.tagline} Eco-solvent banners, stickers, corporate branding, and custom acrylic
+            fabrication for corporate, retail, construction, and event clients across Abu Dhabi and
+            Al Ain.
+          </p>
+        </Reveal>
+        <Reveal variant="up" delay={360}>
+          <div class="mt-9 flex flex-wrap gap-3">
+            <Button
+              href={business.whatsappHref}
+              variant="accent"
+              size="lg"
+              icon="lucide:message-circle"
+              external
+              arrow
+            >
+              WhatsApp Us
+            </Button>
+            <Button href={business.phoneHref} variant="glass" size="lg" icon="lucide:phone">
+              Call {business.phone}
+            </Button>
+          </div>
+        </Reveal>
       </div>
-      <div class="hidden lg:block flex-1">
-        <img
-          src="/images/hero.webp"
-          alt="Top Rank Advertising large-format printing workshop in Abu Dhabi with technicians operating industrial eco-solvent printers"
-          class="rounded-2xl shadow-2xl"
-          width="1376"
-          height="768"
-          loading="eager"
-        />
+
+      <!-- Collage from the single hero asset: a primary frame plus an offset
+           secondary crop. Visible at every breakpoint (it used to be lg-only). -->
+      <div class="lg:col-span-6">
+        <Reveal variant="scale" delay={200}>
+          <div class="relative">
+            <MediaFrame
+              src={heroImage}
+              alt="Top Rank Advertising large-format printing workshop in Abu Dhabi with technicians operating industrial eco-solvent printers"
+              ratio="4/3"
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              class="shadow-brand-lg ring-1 ring-white/10"
+            />
+            <div
+              class="absolute -bottom-6 -left-4 hidden w-40 animate-float-soft sm:block md:w-48 lg:-left-8 lg:w-52"
+            >
+              <MediaFrame
+                src={heroInset}
+                alt="Quality check on freshly printed vinyl at the Top Rank Advertising workshop in Mussafah"
+                ratio="1/1"
+                rounded="xl"
+                sizes="13rem"
+                class="shadow-brand-lg ring-4 ring-brand-900"
+              />
+            </div>
+          </div>
+        </Reveal>
       </div>
     </div>
   </section>
 
-  <!-- ============ STATS BAR ============ -->
-  <section class="bg-brand-950">
-    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-px sm:grid-cols-4">
-      {[
-        { icon: 'lucide:award', label: 'End-to-End Service' },
-        { icon: 'lucide:check-circle', label: 'On-Time Delivery' },
-        { icon: 'lucide:tags', label: 'B2B Volume Pricing' },
-        { icon: 'lucide:shield-check', label: 'Quality Guaranteed' },
-      ].map((stat) => (
-        <div class="flex items-center justify-center gap-3 bg-brand-950 px-4 py-5">
-          <Icon name={stat.icon} class="size-5 shrink-0 text-accent-400" />
-          <span class="text-sm font-medium text-white">{stat.label}</span>
-        </div>
-      ))}
+  <!-- ============ SERVICE MARQUEE ============ -->
+  <div class="border-y border-white/5 bg-brand-950 py-3.5 md:py-4">
+    <Marquee items={serviceTypes.map((s) => s.name)} label="Our services" />
+  </div>
+
+  <!-- ============ STATS ============ -->
+  <Section tone="deep" size="md">
+    <div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <StatCounter value={business.yearEstablished} label="Established" delay={0} />
+      <StatCounter value={serviceTypes.length} label="Service lines" delay={80} />
+      <StatCounter value={serviceAreas.length} label="Areas covered" delay={160} />
+      <StatCounter value={fastestResponse} suffix="min" label="Fastest response" delay={240} />
     </div>
-  </section>
+
+    <div class="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-4">
+      {
+        trustSignals.map((stat, i) => (
+          <Reveal variant="up" delay={Math.min(i, 5) * 70}>
+            <div class="flex h-full flex-col items-center gap-3 bg-brand-900 px-4 py-6 text-center sm:flex-row sm:text-left">
+              <Icon name={stat.icon} class="size-5 shrink-0 text-accent-400" />
+              <span class="text-sm font-medium text-white">{stat.label}</span>
+            </div>
+          </Reveal>
+        ))
+      }
+    </div>
+  </Section>
 
   <!-- ============ SERVICES GRID ============ -->
-  <section class="py-16 lg:py-24">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="text-center">
-        <h2 class="font-display text-3xl text-brand-900 sm:text-4xl">
-          Our B2B Printing & Branding Services
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-stone-600">
-          From single banners to complete corporate rebrands, we handle design, print, fabrication, and installation for businesses of every size.
-        </p>
-      </div>
+  <Section tone="paper" size="lg">
+    <SectionHeading
+      eyebrow="What we do"
+      title="Our B2B Printing & Branding Services"
+      subcopy="From single banners to complete corporate rebrands, we handle design, print, fabrication, and installation for businesses of every size."
+      align="center"
+    />
 
-      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {serviceTypes.map((service, i) => (
-          <a
+    <!-- Feature card spans 3 columns, so 1 + 9 fills exactly 12 cells = 3 clean
+         rows at lg. Assumes serviceTypes.length === 10; a different count just
+         leaves a ragged last row. -->
+    <div class="mt-14 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {
+        serviceTypes.map((service, i) => (
+          <ServiceCard
+            service={service}
             href={serviceUrl(service.slug)}
-            class={`card-hover group relative rounded-xl border border-stone-200 bg-white p-6 animate-fade-up stagger-${Math.min(i + 1, 6)}`}
-          >
-            <div class="flex size-12 items-center justify-center rounded-lg bg-brand-50 text-brand-700 transition-colors group-hover:bg-brand-100">
-              <Icon name={service.icon} class="size-6" />
-            </div>
-            <h3 class="mt-4 font-display text-lg text-brand-900">
-              {service.name}
-            </h3>
-            <p class="mt-2 text-sm leading-relaxed text-stone-600">
-              {service.shortDescription}
-            </p>
-            <p class="mt-3 text-sm font-semibold text-brand-700">
-              From AED {service.priceRange.min.toLocaleString()}
-            </p>
-          </a>
-        ))}
-      </div>
+            variant={i >= serviceTypes.length - 2 ? 'wide' : 'photo'}
+            headingLevel="h3"
+            price="from"
+            delay={Math.min(i, 5) * 70}
+          />
+        ))
+      }
     </div>
-  </section>
+  </Section>
 
   <!-- ============ HOW WE WORK ============ -->
-  <section class="bg-brand-950 py-16 lg:py-24" id="how-we-work">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="text-center">
-        <span class="inline-flex items-center gap-2 rounded-full bg-brand-900 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-300">
-          <Icon name="lucide:settings" class="size-3.5" />
-          Simple Process
-        </span>
-        <h2 class="mt-4 font-display text-3xl text-white sm:text-4xl">
-          How We Work
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-brand-300">
-          From your first brief to final delivery, we keep things straightforward and transparent. Here is what to expect when you partner with us.
-        </p>
-      </div>
+  <Section tone="ink" size="lg" id="how-we-work">
+    <SectionHeading
+      eyebrow="Simple Process"
+      eyebrowIcon="lucide:settings"
+      title="How We Work"
+      subcopy="From your first brief to final delivery, we keep things straightforward and transparent. Here is what to expect when you partner with us."
+      tone="dark"
+      align="center"
+    />
 
-      <div class="mt-14 lg:flex lg:gap-10">
-        <div class="flex gap-2 overflow-x-auto pb-4 lg:w-80 lg:shrink-0 lg:flex-col lg:gap-0 lg:overflow-visible lg:pb-0">
-          {[
-            {
-              step: 1,
-              title: 'Share Your Brief',
-              icon: 'lucide:file-text',
-              summary: 'Send artwork or describe your project needs.',
-              detail: 'Share your artwork, brand guidelines, or project brief via WhatsApp, email, or phone. We confirm specifications, materials, quantities, and timeline before moving forward.',
-            },
-            {
-              step: 2,
-              title: 'Design & Proofing',
-              icon: 'lucide:pen-tool',
-              summary: 'Our team prepares files and sends proofs for approval.',
-              detail: 'Our designers and pre-press specialists review your files for resolution, color accuracy, and print readiness. We send digital proofs or physical swatches for your sign-off.',
-            },
-            {
-              step: 3,
-              title: 'Production at Scale',
-              icon: 'lucide:printer',
-              summary: 'We print, fabricate, or brand with quality checks at every stage.',
-              detail: 'Using industrial eco-solvent, UV, and laser equipment, we produce your order at scale. Quality checks happen at every stage: color matching, cutting precision, and structural integrity.',
-            },
-            {
-              step: 4,
-              title: 'Delivery & Installation',
-              icon: 'lucide:truck',
-              summary: 'Finished products delivered to your site, with install support available.',
-              detail: 'We carefully pack and deliver to your location across Abu Dhabi and Al Ain. For signage, banners, and acrylic displays, our installation team ensures everything is mounted perfectly.',
-            },
-          ].map((item, i) => (
-            <button
-              type="button"
-              class={`hww-tab group flex w-64 shrink-0 items-start gap-4 rounded-xl px-5 py-4 text-left transition-all lg:w-full ${i === 0 ? 'bg-brand-800/80 ring-1 ring-brand-600/40' : 'hover:bg-brand-900'}`}
-              data-step={item.step}
-              data-title={item.title}
-              data-detail={item.detail}
-            >
-              <div class={`flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors ${i === 0 ? 'bg-accent-500 text-white' : 'bg-brand-800 text-brand-400 group-hover:bg-brand-700'}`}>
+    <!-- Contained, left-aligned, equal-height cards. Every step shows its
+         title, summary AND detail, so nothing depends on interaction. -->
+    <ol class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        processSteps.map((item, i) => (
+          <Reveal as="li" variant="up" delay={Math.min(i, 5) * 90} class="h-full">
+            <div class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white/[0.04] p-7 ring-1 ring-white/10 transition-all duration-400 ease-out-expo hover:-translate-y-1.5 hover:bg-white/[0.07] hover:ring-white/20">
+              {/* Oversized ordinal anchors the card and carries the sequence. */}
+              <span
+                class="pointer-events-none absolute right-5 top-4 select-none font-display text-6xl leading-none text-white/[0.07] transition-colors duration-400 group-hover:text-white/[0.12]"
+                aria-hidden="true"
+              >
+                {String(item.step).padStart(2, '0')}
+              </span>
+
+              <span class="relative flex size-12 items-center justify-center rounded-xl bg-accent-500/15 text-accent-400 ring-1 ring-accent-500/25 transition-colors duration-300 group-hover:bg-accent-500 group-hover:text-white">
                 <Icon name={item.icon} class="size-5" />
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class={`text-xs font-bold ${i === 0 ? 'text-accent-400' : 'text-brand-500'}`}>Step {item.step}</span>
-                </div>
-                <h3 class={`mt-0.5 text-sm font-semibold ${i === 0 ? 'text-white' : 'text-brand-200'}`}>
-                  {item.title}
-                </h3>
-                <p class={`mt-1 text-xs leading-relaxed ${i === 0 ? 'text-brand-300' : 'text-brand-400'}`}>
-                  {item.summary}
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
+              </span>
 
-        <div class="mt-8 flex-1 lg:mt-0">
-          <div class="relative overflow-hidden rounded-2xl bg-brand-800/50 p-8 lg:p-10">
-            <div class="flex items-center gap-3">
-              <span class="flex size-8 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white" id="hww-step-num">1</span>
-              <h3 class="font-display text-xl text-white sm:text-2xl" id="hww-title">Share Your Brief</h3>
-            </div>
-            <p class="mt-4 max-w-xl text-sm leading-relaxed text-brand-200 sm:text-base" id="hww-detail">
-              Share your artwork, brand guidelines, or project brief via WhatsApp, email, or phone. We confirm specifications, materials, quantities, and timeline before moving forward.
-            </p>
-          </div>
+              <span class="relative mt-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent-400">
+                Step {String(item.step).padStart(2, '0')}
+              </span>
 
-          <div class="mt-4 flex items-center justify-center gap-2 lg:justify-start">
-            {[1, 2, 3, 4].map((n) => (
-              <button
-                type="button"
-                class={`hww-dot size-2.5 rounded-full transition-all ${n === 1 ? 'bg-accent-500 w-8' : 'bg-brand-700 hover:bg-brand-600'}`}
-                data-dot={n}
-                aria-label={`Go to step ${n}`}
+              <h3 class="relative mt-2 font-display text-xl tracking-tight text-white">
+                {item.title}
+              </h3>
+
+              <p class="relative mt-3 text-sm font-medium leading-relaxed text-brand-100">
+                {item.summary}
+              </p>
+
+              <span
+                class="relative my-5 block h-px w-full bg-white/10"
+                aria-hidden="true"
               />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <script>
-    const tabs = document.querySelectorAll<HTMLButtonElement>('.hww-tab');
-    const dots = document.querySelectorAll<HTMLButtonElement>('.hww-dot');
-    const stepNum = document.getElementById('hww-step-num');
-    const title = document.getElementById('hww-title');
-    const detail = document.getElementById('hww-detail');
-
-    function activateStep(step: number) {
-      const tab = Array.from(tabs).find(t => Number(t.dataset.step) === step);
-      if (!tab || !stepNum || !title || !detail) return;
-
-      tabs.forEach(t => {
-        const isActive = t === tab;
-        t.classList.toggle('bg-brand-800/80', isActive);
-        t.classList.toggle('ring-1', isActive);
-        t.classList.toggle('ring-brand-600/40', isActive);
-        t.classList.toggle('hover:bg-brand-900', !isActive);
-
-        const icon = t.querySelector('div:first-child') as HTMLElement;
-        if (icon) {
-          icon.classList.toggle('bg-accent-500', isActive);
-          icon.classList.toggle('text-white', isActive);
-          icon.classList.toggle('bg-brand-800', !isActive);
-          icon.classList.toggle('text-brand-400', !isActive);
-          icon.classList.toggle('group-hover:bg-brand-700', !isActive);
-        }
-
-        const stepLabel = t.querySelector('span:first-of-type') as HTMLElement;
-        if (stepLabel) {
-          stepLabel.classList.toggle('text-accent-400', isActive);
-          stepLabel.classList.toggle('text-brand-500', !isActive);
-        }
-
-        const h3 = t.querySelector('h3') as HTMLElement;
-        if (h3) {
-          h3.classList.toggle('text-white', isActive);
-          h3.classList.toggle('text-brand-200', !isActive);
-        }
-
-        const p = t.querySelector('p') as HTMLElement;
-        if (p) {
-          p.classList.toggle('text-brand-300', isActive);
-          p.classList.toggle('text-brand-400', !isActive);
-        }
-      });
-
-      dots.forEach(d => {
-        const isActive = Number(d.dataset.dot) === step;
-        d.classList.toggle('bg-accent-500', isActive);
-        d.classList.toggle('w-8', isActive);
-        d.classList.toggle('bg-brand-700', !isActive);
-      });
-
-      stepNum.textContent = String(step);
-      title.textContent = tab.dataset.title || '';
-      detail.textContent = tab.dataset.detail || '';
-    }
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => activateStep(Number(tab.dataset.step)));
-    });
-
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => activateStep(Number(dot.dataset.dot)));
-    });
-
-    let currentStep = 1;
-    let autoTimer = setInterval(() => {
-      currentStep = currentStep >= 4 ? 1 : currentStep + 1;
-      activateStep(currentStep);
-    }, 6000);
-
-    const section = document.getElementById('how-we-work');
-    section?.addEventListener('click', () => {
-      clearInterval(autoTimer);
-      const clickedTab = document.querySelector('.hww-tab.bg-brand-800\\/80');
-      if (clickedTab) {
-        currentStep = Number((clickedTab as HTMLElement).dataset.step);
+              <p class="relative text-sm leading-relaxed text-brand-300/90">{item.detail}</p>
+            </div>
+          </Reveal>
+        ))
       }
-      autoTimer = setInterval(() => {
-        currentStep = currentStep >= 4 ? 1 : currentStep + 1;
-        activateStep(currentStep);
-      }, 15000);
-    });
-  </script>
+    </ol>
+  </Section>
 
-  <!-- ============ REVIEWS STRIP ============ -->
-  <section class="border-y border-stone-200/60 bg-white py-14 lg:py-20">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="font-display text-2xl text-brand-900 sm:text-3xl">
+  <!-- ============ REVIEWS ============ -->
+  <Section tone="plain" size="md">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <Reveal variant="up">
+          <h2 class="font-display text-3xl tracking-tight text-brand-900 sm:text-4xl">
             What Our Clients Say
           </h2>
-          <div class="mt-2 flex items-center gap-2">
+        </Reveal>
+        <Reveal variant="up" delay={90}>
+          <div class="mt-3 flex items-center gap-2">
             <div class="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map(() => (
-                <Icon name="lucide:star" class="size-5 fill-amber-400 text-amber-400" />
-              ))}
+              {
+                [1, 2, 3, 4, 5].map(() => (
+                  <Icon name="lucide:star" class="size-5 fill-amber-400 text-amber-400" />
+                ))
+              }
             </div>
             <span class="text-sm font-medium text-stone-600">
-              {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)} average from {reviews.length} reviews
+              {averageRating} average from {reviews.length} reviews
             </span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-8 flex gap-5 overflow-x-auto px-5 pb-4 lg:px-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <div class="mx-auto flex max-w-7xl gap-5">
-        {reviews.map((review) => (
-          <div class="w-80 shrink-0 rounded-xl border border-stone-200/60 bg-stone-50 p-6">
-            <div class="flex items-center gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Icon
-                  name="lucide:star"
-                  class={`size-4 ${i < Math.floor(review.rating) ? 'fill-amber-400 text-amber-400' : 'text-stone-200'}`}
-                />
-              ))}
-            </div>
-            <p class="mt-3 text-sm leading-relaxed text-stone-600 line-clamp-4">
-              "{review.text}"
-            </p>
-            <div class="mt-4 flex items-center gap-3">
-              <div class="flex size-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
-                {review.author.charAt(0)}
-              </div>
-              <div>
-                <p class="text-sm font-semibold text-stone-800">{review.author}</p>
-                <p class="text-xs text-stone-400">{new Date(review.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ AREAS SECTION ============ -->
-  <section class="bg-stone-100 py-16 lg:py-24">
-    <div class="mx-auto max-w-7xl px-5 lg:px-8">
-      <div class="text-center">
-        <h2 class="font-display text-3xl text-brand-900 sm:text-4xl">
-          Areas We Serve
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-stone-600">
-          Proudly serving businesses across {business.serviceRadius} with fast turnaround times and reliable B2B printing and branding.
-        </p>
+        </Reveal>
       </div>
 
-      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {serviceAreas.map((area, i) => (
-          <a
-            href={areaUrl(area.slug)}
-            class={`card-hover group rounded-xl border border-stone-200 bg-white p-6 animate-fade-up stagger-${Math.min(i + 1, 6)}`}
+      <Reveal variant="up" delay={120}>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            id="reviews-prev"
+            aria-label="Previous reviews"
+            class="flex size-10 items-center justify-center rounded-full border border-stone-200 text-brand-800 transition-colors duration-300 hover:bg-brand-50"
           >
-            <div class="flex items-center gap-3">
-              <Icon name="lucide:map-pin" class="size-5 text-brand-600" />
-              <h3 class="font-display text-lg text-brand-900">{area.name}</h3>
-            </div>
-            <p class="mt-1 text-sm text-stone-500">{area.county}</p>
-            <div class="mt-3 flex items-center gap-1.5 text-sm text-stone-600">
-              <Icon name="lucide:clock" class="size-4 text-brand-500" />
-              <span>{area.responseTime} response</span>
-            </div>
-          </a>
-        ))}
-      </div>
+            <Icon name="lucide:arrow-left" class="size-4" />
+          </button>
+          <button
+            type="button"
+            id="reviews-next"
+            aria-label="Next reviews"
+            class="flex size-10 items-center justify-center rounded-full border border-stone-200 text-brand-800 transition-colors duration-300 hover:bg-brand-50"
+          >
+            <Icon name="lucide:arrow-right" class="size-4" />
+          </button>
+        </div>
+      </Reveal>
     </div>
-  </section>
+
+    <Reveal variant="up" class="block">
+      <div
+        class="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        id="reviews-rail"
+      >
+        {reviews.map((review) => <ReviewCard review={review} variant="rail" />)}
+      </div>
+    </Reveal>
+  </Section>
+
+  <!-- ============ AREAS ============ -->
+  <Section tone="shade" size="lg">
+    <SectionHeading
+      eyebrow="Where we work"
+      title="Areas We Serve"
+      subcopy={`Proudly serving businesses across ${business.serviceRadius} with fast turnaround times and reliable B2B printing and branding.`}
+      align="center"
+    />
+
+    <!-- The two `primary` areas span 2 cells, so 10 areas fill 12 cells exactly. -->
+    <div class="mt-14 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {
+        serviceAreas.map((area, i) => (
+          <AreaCard
+            area={area}
+            href={areaUrl(area.slug)}
+            variant={area.priority === 'primary' ? 'wide' : 'compact'}
+            headingLevel="h3"
+            delay={Math.min(i, 5) * 70}
+          />
+        ))
+      }
+    </div>
+  </Section>
 
   <!-- ============ CTA BANNER ============ -->
-  <section class="bg-brand-900">
-    <div class="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
-      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
-        <div>
-          <h2 class="font-display text-3xl text-white">Ready to Start Your Project?</h2>
-          <p class="mt-2 text-brand-200">
-            Get in touch for a project-based quotation. We serve businesses across Abu Dhabi and Al Ain.
-          </p>
-        </div>
-        <div class="flex shrink-0 flex-wrap gap-4">
-          <a
-            href={business.whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:bg-accent-600"
-          >
-            <Icon name="lucide:message-circle" class="size-5" />
-            WhatsApp
-          </a>
-          <a
-            href={contactUrl()}
-            class="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/20"
-          >
-            Contact Us
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Section tone="deep" size="md">
+    <CtaBanner
+      title="Ready to Start Your Project?"
+      body="Get in touch for a project-based quotation. We serve businesses across Abu Dhabi and Al Ain."
+      primary={{
+        label: 'WhatsApp',
+        href: business.whatsappHref,
+        icon: 'lucide:message-circle',
+        external: true,
+      }}
+      secondary={{ label: 'Contact Us', href: contactUrl() }}
+    />
+  </Section>
 </BaseLayout>
+
+<script>
+  // ---- Reviews rail ----
+  const rail = document.getElementById('reviews-rail');
+  const prev = document.getElementById('reviews-prev');
+  const next = document.getElementById('reviews-next');
+
+  if (rail && prev && next) {
+    const step = () => Math.max(rail.clientWidth * 0.8, 280);
+    const behavior: ScrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)')
+      .matches
+      ? 'auto'
+      : 'smooth';
+
+    prev.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior }));
+    next.addEventListener('click', () => rail.scrollBy({ left: step(), behavior }));
+
+    const syncButtons = () => {
+      const max = rail.scrollWidth - rail.clientWidth - 2;
+      prev.toggleAttribute('disabled', rail.scrollLeft <= 0);
+      next.toggleAttribute('disabled', rail.scrollLeft >= max);
+      prev.classList.toggle('opacity-40', rail.scrollLeft <= 0);
+      next.classList.toggle('opacity-40', rail.scrollLeft >= max);
+    };
+
+    rail.addEventListener('scroll', syncButtons, { passive: true });
+    window.addEventListener('resize', syncButtons);
+    syncButtons();
+  }
+</script>
